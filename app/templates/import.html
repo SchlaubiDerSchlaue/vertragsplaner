@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Vertragsdaten importieren</h1>
+
+<div class="alert alert-info">
+    Unterstützt werden CSV- und Excel-Dateien. Eine Zeile entspricht einer Vertragspositionsversion.
+</div>
+
+<form method="post" enctype="multipart/form-data" class="card p-3">
+    <label class="form-label">Datei auswählen</label>
+    <input type="file" name="file" class="form-control" accept=".csv,.xlsx" required>
+
+    <button class="btn btn-primary mt-3">Import starten</button>
+</form>
+
+{% if message %}
+<div class="alert alert-success mt-3">
+    {{ message }}
+</div>
+{% endif %}
+
+{% if error %}
+<div class="alert alert-danger mt-3">
+    {{ error }}
+</div>
+{% endif %}
+
+<h3 class="mt-4">Erwartete Spalten</h3>
+
+<table class="table table-sm">
+    <tr><td>customer_name</td><td>Kundenname</td></tr>
+    <tr><td>customer_no</td><td>Optional: Kundennummer</td></tr>
+    <tr><td>contract_no</td><td>Optional: Vertragsnummer</td></tr>
+    <tr><td>contract_title</td><td>Vertragstitel</td></tr>
+    <tr><td>status</td><td>active, forecast, cancelled, ended, draft</td></tr>
+    <tr><td>contract_type</td><td>revenue oder cost</td></tr>
+    <tr><td>contract_start</td><td>Optional: Vertragsbeginn</td></tr>
+    <tr><td>contract_end</td><td>Optional: Vertragsende</td></tr>
+    <tr><td>position_name</td><td>Positionsname</td></tr>
+    <tr><td>position_type</td><td>Optional: revenue oder cost</td></tr>
+    <tr><td>valid_from</td><td>Gültig ab</td></tr>
+    <tr><td>amount</td><td>Betrag</td></tr>
+    <tr><td>currency</td><td>Optional: z. B. EUR</td></tr>
+    <tr><td>account</td><td>Konto</td></tr>
+    <tr><td>cost_center_1</td><td>Kostenstelle 1</td></tr>
+    <tr><td>cost_center_2</td><td>Kostenstelle 2</td></tr>
+    <tr><td>recurrence</td><td>monthly, quarterly, yearly, once</td></tr>
+</table>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% from "_list_macros.html" import sort_link %}
+
+{% block content %}
+<h1>Positionen</h1>
+
+<form class="row g-2 align-items-end mb-3" method="get">
+    <div class="col-md-4">
+        <label class="form-label" for="position-q">Suche</label>
+        <input class="form-control" id="position-q" name="q" value="{{ filters.q }}" placeholder="Position, Vertrag, Partner">
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="position-status">Status</label>
+        <select class="form-select" id="position-status" name="status">
+            <option value="">Alle</option>
+            {% for item in statuses %}
+            <option value="{{ item }}" {% if filters.status == item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="position-type">Typ</label>
+        <select class="form-select" id="position-type" name="position_type">
+            <option value="">Alle</option>
+            {% for item in position_types %}
+            <option value="{{ item }}" {% if filters.position_type == item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="position-partner-type">Partnerart</label>
+        <select class="form-select" id="position-partner-type" name="partner_type">
+            <option value="">Alle</option>
+            <option value="customer" {% if filters.partner_type == "customer" %}selected{% endif %}>Kunde</option>
+            <option value="supplier" {% if filters.partner_type == "supplier" %}selected{% endif %}>Lieferant</option>
+        </select>
+    </div>
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="direction" value="{{ direction }}">
+    <div class="col-md-auto">
+        <button class="btn btn-outline-primary" type="submit">Filtern</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('contracts.list_positions') }}">Zuruecksetzen</a>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+    <tr>
+        <th>{{ sort_link('contracts.list_positions', 'Position', 'name', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_positions', 'Vertrag', 'contract', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_positions', 'Partner', 'partner', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_positions', 'Typ', 'position_type', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_positions', 'Status', 'status', sort, direction, sort_filters) }}</th>
+        <th class="text-end">Versionen</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for position in positions %}
+    <tr>
+        <td>{{ position.name }}</td>
+        <td>
+            <a href="{{ url_for('contracts.contract_detail', contract_id=position.contract.id) }}">{{ position.contract.title }}</a>
+        </td>
+        <td>{{ position.contract.partner_name }}</td>
+        <td>{{ position.position_type }}</td>
+        <td>{{ position.status }}</td>
+        <td class="text-end">{{ position.versions|length }}</td>
+        <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('contracts.edit_position', position_id=position.id) }}">Bearbeiten</a>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="7" class="text-muted">Noch keine Positionen vorhanden.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

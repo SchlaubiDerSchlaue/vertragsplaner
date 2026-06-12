@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Planung erzeugen</h1>
+
+<form method="post" class="card p-3 mb-4">
+    <div class="row">
+        <div class="col-md-3">
+            <label class="form-label">Von</label>
+            <input type="date" name="start_date" class="form-control" value="{{ form_data.start_date or '' }}" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label">Bis</label>
+            <input type="date" name="end_date" class="form-control" value="{{ form_data.end_date or '' }}" required>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-check">
+            <input class="form-check-input" type="checkbox" name="include_revenue" checked>
+            Erlöse berücksichtigen
+        </label>
+
+        <label class="form-check">
+            <input class="form-check-input" type="checkbox" name="include_cost">
+            Kosten berücksichtigen
+        </label>
+
+        <label class="form-check">
+            <input class="form-check-input" type="checkbox" name="include_forecast">
+            Forecast-Verträge berücksichtigen
+        </label>
+    </div>
+
+    <div class="mt-3">
+        <button class="btn btn-primary" name="export_format" value="">Planung berechnen</button>
+        <button class="btn btn-outline-secondary" name="export_format" value="xlsx">Excel exportieren</button>
+        <button class="btn btn-outline-secondary" name="export_format" value="csv">CSV exportieren</button>
+    </div>
+</form>
+
+{% if lines %}
+<p><strong>{{ lines|length }}</strong> Planungszeilen erzeugt.</p>
+
+<table class="table table-sm table-striped">
+    <thead>
+    <tr>
+        <th>Monat</th>
+        <th>Partner</th>
+        <th>Art</th>
+        <th>Vertrag</th>
+        <th>Status</th>
+        <th>Position</th>
+        <th>Typ</th>
+        <th>Konto</th>
+        <th>KS 1</th>
+        <th>KS 2</th>
+        <th class="text-end">Betrag</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for line in lines %}
+    <tr>
+        <td>{{ line.month }}</td>
+        <td>{{ line.partner }}</td>
+        <td>{{ line.partner_type }}</td>
+        <td>{{ line.contract }}</td>
+        <td>{{ line.contract_status }}</td>
+        <td>{{ line.position }}</td>
+        <td>{{ line.type }}</td>
+        <td>{{ line.account }}</td>
+        <td>{{ line.cost_center_1 }}</td>
+        <td>{{ line.cost_center_2 }}</td>
+        <td class="text-end">{{ "%.2f"|format(line.amount) }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% endblock %}

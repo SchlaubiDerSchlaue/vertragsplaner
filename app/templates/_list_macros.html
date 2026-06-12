@@ -1,0 +1,6 @@
+{% macro sort_link(endpoint, label, key, sort, direction, filters) -%}
+{% set next_direction = 'desc' if sort == key and direction == 'asc' else 'asc' %}
+<a class="link-dark text-decoration-none" href="{{ url_for(endpoint) }}?{% for name, value in filters.items() %}{{ name|urlencode }}={{ value|urlencode }}&{% endfor %}sort={{ key|urlencode }}&direction={{ next_direction }}">
+    {{ label }}{% if sort == key %} {{ "&uarr;"|safe if direction == "asc" else "&darr;"|safe }}{% endif %}
+</a>
+{%- endmacro %}

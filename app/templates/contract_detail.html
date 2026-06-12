@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">{{ contract.title }}</h1>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" href="{{ url_for('contracts.edit_contract', contract_id=contract.id) }}">Vertrag bearbeiten</a>
+        <a class="btn btn-primary" href="{{ url_for('contracts.new_position', contract_id=contract.id) }}">Position hinzufuegen</a>
+    </div>
+</div>
+
+<div class="card p-3 mb-4">
+    <p><strong>{{ contract.partner_type }}:</strong> {{ contract.partner_name }}</p>
+    <p><strong>Vertragsnummer:</strong> {{ contract.contract_no or "" }}</p>
+    <p><strong>Status:</strong> {{ contract.status }}</p>
+    <p><strong>Typ:</strong> {{ contract.contract_type }}</p>
+    <p><strong>Laufzeit:</strong> {{ contract.start_date }} bis {{ contract.end_date or "offen" }}</p>
+    {% if contract.description %}
+    <p><strong>Beschreibung:</strong> {{ contract.description }}</p>
+    {% endif %}
+</div>
+
+<h2>Positionen</h2>
+
+{% for position in contract.positions|sort(attribute="sort_order") %}
+<div class="card mb-3">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <div>
+            <strong>{{ position.name }}</strong>
+            <span class="badge bg-secondary">{{ position.position_type }}</span>
+            <span class="badge bg-light text-dark">{{ position.status }}</span>
+        </div>
+        <div class="d-flex gap-2">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('contracts.edit_position', position_id=position.id) }}">Bearbeiten</a>
+            <a class="btn btn-sm btn-primary" href="{{ url_for('contracts.new_version', position_id=position.id) }}">Fortschreiben</a>
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-sm align-middle">
+            <thead>
+            <tr>
+                <th>Gueltig ab</th>
+                <th>Gueltig bis</th>
+                <th>Betrag</th>
+                <th>Konto</th>
+                <th>KS 1</th>
+                <th>KS 2</th>
+                <th>Rhythmus</th>
+                <th>Aktiv</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for version in position.versions %}
+            <tr>
+                <td>{{ version.valid_from }}</td>
+                <td>{{ version.valid_to or "" }}</td>
+                <td>{{ version.amount }} {{ version.currency }}</td>
+                <td>{{ version.account or "" }}</td>
+                <td>{{ version.cost_center_1 or "" }}</td>
+                <td>{{ version.cost_center_2 or "" }}</td>
+                <td>{{ version.recurrence }}</td>
+                <td>{{ "ja" if version.is_active else "nein" }}</td>
+                <td class="text-end">
+                    <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('contracts.edit_version', version_id=version.id) }}">Korrigieren</a>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="9" class="text-muted">Keine Versionen vorhanden.</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<p>Keine Positionen vorhanden.</p>
+{% endfor %}
+{% endblock %}

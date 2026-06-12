@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Dashboard</h1>
+
+<div class="row g-3">
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('customers.list_customers') }}">
+            <div class="text-muted">Kunden</div>
+            <div class="display-6">{{ stats.customers }}</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('suppliers.list_suppliers') }}">
+            <div class="text-muted">Lieferanten</div>
+            <div class="display-6">{{ stats.suppliers }}</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('contracts.list_contracts') }}">
+            <div class="text-muted">Vertraege</div>
+            <div class="display-6">{{ stats.contracts }}</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('contracts.list_positions') }}">
+            <div class="text-muted">Positionen</div>
+            <div class="display-6">{{ stats.positions }}</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('contracts.list_contracts') }}">
+            <div class="text-muted">Forecast-Vertraege</div>
+            <div class="display-6">{{ stats.forecast_contracts }}</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('planning.planning') }}">
+            <div class="text-muted">Planung</div>
+            <div class="display-6">Start</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('imports.import_view') }}">
+            <div class="text-muted">Import</div>
+            <div class="display-6">CSV</div>
+        </a>
+    </div>
+    <div class="col-md-3">
+        <a class="card p-3 text-decoration-none text-body h-100" href="{{ url_for('exports.export_view') }}">
+            <div class="text-muted">Export</div>
+            <div class="display-6">XLSX</div>
+        </a>
+    </div>
+</div>
+{% endblock %}

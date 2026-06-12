@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Planungsdaten exportieren</h1>
+
+{% if error %}
+<div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+
+<form method="post" class="card p-3">
+    <div class="row g-3">
+        <div class="col-md-3">
+            <label class="form-label" for="start_date">Von</label>
+            <input id="start_date" type="date" name="start_date" class="form-control" value="{{ form_data.start_date }}" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="end_date">Bis</label>
+            <input id="end_date" type="date" name="end_date" class="form-control" value="{{ form_data.end_date }}" required>
+        </div>
+        <div class="col-md-3">
+            <label class="form-label" for="export_format">Format</label>
+            <select id="export_format" class="form-select" name="export_format">
+                <option value="xlsx" {% if form_data.export_format != "csv" %}selected{% endif %}>Excel</option>
+                <option value="csv" {% if form_data.export_format == "csv" %}selected{% endif %}>CSV</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <label class="form-check">
+            <input class="form-check-input" type="checkbox" name="include_revenue" {% if form_data.include_revenue == "on" %}checked{% endif %}>
+            Erloese beruecksichtigen
+        </label>
+
+        <label class="form-check">
+            <input class="form-check-input" type="checkbox" name="include_cost" {% if form_data.include_cost == "on" %}checked{% endif %}>
+            Kosten beruecksichtigen
+        </label>
+
+        <label class="form-check">
+            <input class="form-check-input" type="checkbox" name="include_forecast" {% if form_data.include_forecast == "on" %}checked{% endif %}>
+            Forecast-Vertraege beruecksichtigen
+        </label>
+    </div>
+
+    <button class="btn btn-primary mt-3">Export starten</button>
+</form>
+{% endblock %}

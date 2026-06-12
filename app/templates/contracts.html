@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% from "_list_macros.html" import sort_link %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Vertraege</h1>
+    <a class="btn btn-primary" href="{{ url_for('contracts.new_contract') }}">Neuer Vertrag</a>
+</div>
+
+<form class="row g-2 align-items-end mb-3" method="get">
+    <div class="col-md-4">
+        <label class="form-label" for="contract-q">Suche</label>
+        <input class="form-control" id="contract-q" name="q" value="{{ filters.q }}" placeholder="Nr., Titel, Partner, Verantwortlich">
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="contract-status">Status</label>
+        <select class="form-select" id="contract-status" name="status">
+            <option value="">Alle</option>
+            {% for item in statuses %}
+            <option value="{{ item }}" {% if filters.status == item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="contract-type">Typ</label>
+        <select class="form-select" id="contract-type" name="contract_type">
+            <option value="">Alle</option>
+            {% for item in contract_types %}
+            <option value="{{ item }}" {% if filters.contract_type == item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="col-md-2">
+        <label class="form-label" for="contract-partner-type">Partnerart</label>
+        <select class="form-select" id="contract-partner-type" name="partner_type">
+            <option value="">Alle</option>
+            <option value="customer" {% if filters.partner_type == "customer" %}selected{% endif %}>Kunde</option>
+            <option value="supplier" {% if filters.partner_type == "supplier" %}selected{% endif %}>Lieferant</option>
+        </select>
+    </div>
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="direction" value="{{ direction }}">
+    <div class="col-md-auto">
+        <button class="btn btn-outline-primary" type="submit">Filtern</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('contracts.list_contracts') }}">Zuruecksetzen</a>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+    <tr>
+        <th>{{ sort_link('contracts.list_contracts', 'Nr.', 'contract_no', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_contracts', 'Partner', 'partner', sort, direction, sort_filters) }}</th>
+        <th>Art</th>
+        <th>{{ sort_link('contracts.list_contracts', 'Titel', 'title', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_contracts', 'Typ', 'contract_type', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_contracts', 'Status', 'status', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_contracts', 'Start', 'start_date', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('contracts.list_contracts', 'Ende', 'end_date', sort, direction, sort_filters) }}</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for contract in contracts %}
+    <tr>
+        <td>{{ contract.contract_no or "" }}</td>
+        <td>{{ contract.partner_name }}</td>
+        <td>{{ contract.partner_type }}</td>
+        <td>
+            <a href="{{ url_for('contracts.contract_detail', contract_id=contract.id) }}">
+                {{ contract.title }}
+            </a>
+        </td>
+        <td>{{ contract.contract_type }}</td>
+        <td>{{ contract.status }}</td>
+        <td>{{ contract.start_date }}</td>
+        <td>{{ contract.end_date or "" }}</td>
+        <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('contracts.edit_contract', contract_id=contract.id) }}">Bearbeiten</a>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="9" class="text-muted">Noch keine Vertraege vorhanden.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

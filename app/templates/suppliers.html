@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% from "_list_macros.html" import sort_link %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Lieferanten</h1>
+    <a class="btn btn-primary" href="{{ url_for('suppliers.new_supplier') }}">Neuer Lieferant</a>
+</div>
+
+<form class="row g-2 align-items-end mb-3" method="get">
+    <div class="col-md-5">
+        <label class="form-label" for="supplier-q">Suche</label>
+        <input class="form-control" id="supplier-q" name="q" value="{{ filters.q }}" placeholder="Name, Nummer, Kontakt, E-Mail, Ort">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="supplier-status">Status</label>
+        <select class="form-select" id="supplier-status" name="status">
+            <option value="">Alle</option>
+            {% for item in statuses %}
+            <option value="{{ item }}" {% if filters.status == item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="direction" value="{{ direction }}">
+    <div class="col-md-auto">
+        <button class="btn btn-outline-primary" type="submit">Filtern</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('suppliers.list_suppliers') }}">Zuruecksetzen</a>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+    <tr>
+        <th>{{ sort_link('suppliers.list_suppliers', 'Lieferantennr.', 'supplier_no', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('suppliers.list_suppliers', 'Name', 'name', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('suppliers.list_suppliers', 'Status', 'status', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('suppliers.list_suppliers', 'E-Mail', 'email', sort, direction, sort_filters) }}</th>
+        <th>Vertraege</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for supplier in suppliers %}
+    <tr>
+        <td>{{ supplier.supplier_no or "" }}</td>
+        <td>{{ supplier.name }}</td>
+        <td>{{ supplier.status }}</td>
+        <td>{{ supplier.email or "" }}</td>
+        <td>{{ supplier.contracts|length }}</td>
+        <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('suppliers.edit_supplier', supplier_id=supplier.id) }}">Bearbeiten</a>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="6" class="text-muted">Noch keine Lieferanten vorhanden.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

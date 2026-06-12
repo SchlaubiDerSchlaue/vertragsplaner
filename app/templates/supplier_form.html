@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{% if mode == "new" %}Lieferant erfassen{% else %}Lieferant bearbeiten{% endif %}</h1>
+
+<form method="post" class="mt-3">
+    <div class="row g-3">
+        <div class="col-md-4">
+            <label class="form-label" for="supplier_no">Lieferantennr.</label>
+            <input class="form-control" id="supplier_no" name="supplier_no" value="{{ supplier.supplier_no or '' }}">
+        </div>
+        <div class="col-md-8">
+            <label class="form-label" for="name">Name *</label>
+            <input class="form-control" id="name" name="name" value="{{ supplier.name or '' }}" required>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="status">Status</label>
+            <select class="form-select" id="status" name="status">
+                {% for status in ["active", "inactive"] %}
+                <option value="{{ status }}" {% if supplier.status == status %}selected{% endif %}>{{ status }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="contact_name">Ansprechpartner</label>
+            <input class="form-control" id="contact_name" name="contact_name" value="{{ supplier.contact_name or '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="email">E-Mail</label>
+            <input class="form-control" id="email" name="email" type="email" value="{{ supplier.email or '' }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="street">Strasse / Hausnr.</label>
+            <input class="form-control" id="street" name="street" value="{{ supplier.street or '' }}">
+        </div>
+        <div class="col-md-2">
+            <label class="form-label" for="postal_code">PLZ</label>
+            <input class="form-control" id="postal_code" name="postal_code" value="{{ supplier.postal_code or '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="city">Ort</label>
+            <input class="form-control" id="city" name="city" value="{{ supplier.city or '' }}">
+        </div>
+        <div class="col-md-4">
+            <label class="form-label" for="country">Land</label>
+            <input class="form-control" id="country" name="country" value="{{ supplier.country or '' }}">
+        </div>
+        <div class="col-12">
+            <label class="form-label" for="notes">Notizen</label>
+            <textarea class="form-control" id="notes" name="notes" rows="4">{{ supplier.notes or '' }}</textarea>
+        </div>
+    </div>
+
+    <div class="mt-4 d-flex gap-2">
+        <button class="btn btn-primary" type="submit">Speichern</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('suppliers.list_suppliers') }}">Abbrechen</a>
+    </div>
+</form>
+{% endblock %}

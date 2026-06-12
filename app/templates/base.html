@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <title>Vertragsplanung</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('dashboard.dashboard') }}">Vertragsplanung</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+            <a class="nav-link" href="{{ url_for('customers.list_customers') }}">Kunden</a>
+            <a class="nav-link" href="{{ url_for('suppliers.list_suppliers') }}">Lieferanten</a>
+            <a class="nav-link" href="{{ url_for('contracts.list_contracts') }}">Vertraege</a>
+            <a class="nav-link" href="{{ url_for('contracts.list_positions') }}">Positionen</a>
+            <a class="nav-link" href="{{ url_for('planning.planning') }}">Planung</a>
+            <a class="nav-link" href="{{ url_for('imports.import_view') }}">Import</a>
+            <a class="nav-link" href="{{ url_for('exports.export_view') }}">Export</a>
+        </div>
+    </div>
+</nav>
+
+<main class="container mb-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="mb-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} mb-2" role="alert">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+</main>
+</body>
+</html>

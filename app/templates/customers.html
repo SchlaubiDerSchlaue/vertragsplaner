@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% from "_list_macros.html" import sort_link %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Kunden</h1>
+    <a class="btn btn-primary" href="{{ url_for('customers.new_customer') }}">Neuer Kunde</a>
+</div>
+
+<form class="row g-2 align-items-end mb-3" method="get">
+    <div class="col-md-5">
+        <label class="form-label" for="customer-q">Suche</label>
+        <input class="form-control" id="customer-q" name="q" value="{{ filters.q }}" placeholder="Name, Nummer, Kontakt, E-Mail, Ort">
+    </div>
+    <div class="col-md-3">
+        <label class="form-label" for="customer-status">Status</label>
+        <select class="form-select" id="customer-status" name="status">
+            <option value="">Alle</option>
+            {% for item in statuses %}
+            <option value="{{ item }}" {% if filters.status == item %}selected{% endif %}>{{ item }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="direction" value="{{ direction }}">
+    <div class="col-md-auto">
+        <button class="btn btn-outline-primary" type="submit">Filtern</button>
+        <a class="btn btn-outline-secondary" href="{{ url_for('customers.list_customers') }}">Zuruecksetzen</a>
+    </div>
+</form>
+
+<table class="table table-striped align-middle">
+    <thead>
+    <tr>
+        <th>{{ sort_link('customers.list_customers', 'Kundennr.', 'customer_no', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('customers.list_customers', 'Name', 'name', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('customers.list_customers', 'Status', 'status', sort, direction, sort_filters) }}</th>
+        <th>{{ sort_link('customers.list_customers', 'E-Mail', 'email', sort, direction, sort_filters) }}</th>
+        <th>Vertraege</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for customer in customers %}
+    <tr>
+        <td>{{ customer.customer_no or "" }}</td>
+        <td>{{ customer.name }}</td>
+        <td>{{ customer.status }}</td>
+        <td>{{ customer.email or "" }}</td>
+        <td>{{ customer.contracts|length }}</td>
+        <td class="text-end">
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('customers.edit_customer', customer_id=customer.id) }}">Bearbeiten</a>
+        </td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="6" class="text-muted">Noch keine Kunden vorhanden.</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
