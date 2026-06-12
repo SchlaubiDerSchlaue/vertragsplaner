@@ -1,12 +1,12 @@
 # Planungsstand Vertragsplanung-App
 
-Stand: 2026-05-31
+Stand: 2026-06-13
 
 ## Ziel
 
-Entwicklung einer Web-App zur Verwaltung von Kundenverträgen mit Fokus auf die Ableitung von Planungsdaten für eine Planungsrechnung.
+Entwicklung einer Web-App zur Verwaltung von Kunden- und Lieferantenverträgen mit Fokus auf die Ableitung monatlicher Planungsdaten für eine Planungsrechnung.
 
-Die App soll zunächst Erlösverträge abbilden, später aber auch für Kostenverträge nutzbar sein.
+Die App bildet Erlös- und Kostenverträge ab. Erlöse werden typischerweise Kunden zugeordnet, Kosten typischerweise Lieferanten. Technisch hängt ein Vertrag genau an einem Partner: entweder Kunde oder Lieferant.
 
 ## Technologische Basis
 
@@ -14,56 +14,89 @@ Die App soll zunächst Erlösverträge abbilden, später aber auch für Kostenve
 - Flask
 - SQLAlchemy
 - Flask-Migrate
-- SQLite für den Start
-- später PostgreSQL möglich
+- SQLite für den lokalen Start
 - Jinja Templates
 - Bootstrap
 - Pandas/OpenPyXL für Import und Export
 
+PostgreSQL bleibt als spätere Produktivoption vorgesehen.
+
+## Umgesetzter Stand
+
+- App-Factory mit Blueprints für Dashboard, Kunden, Lieferanten, Verträge, Planung, Import und Export
+- Dashboard mit Zählwerten für Kunden, Lieferanten, Verträge, Positionen und Forecast-Verträge
+- Kundenstamm inklusive Nummer, Status, Kontakt, E-Mail, Adresse und Notizen
+- Lieferantenstamm inklusive Nummer, Status, Kontakt, E-Mail, Adresse und Notizen
+- Vertragsliste mit Suche, Statusfilter, Vertragstypfilter, Partnerfilter und Sortierung
+- Positionsliste mit Suche, Statusfilter, Positionstypfilter, Partnerfilter und Sortierung
+- Vertragsanlage/-bearbeitung mit Partnerauswahl Kunde oder Lieferant
+- Vertragsdetail mit Positionen und Versionen
+- Positionsanlage/-bearbeitung
+- Versionsanlage/-bearbeitung
+- Fortschreibung neuer Versionen schließt vorherige überschneidende Versionen automatisch
+- Monatsplanung mit Zeitraum, Erlös-/Kostenfilter und Forecast-Option
+- Export der Planung als Excel oder CSV
+- Separater Exportscreen mit Plausibilisierung des Zeitraums
+- Import von CSV- und Excel-Dateien
+- Initialisierung/Aktualisierung der lokalen Datenbank über `create_db.py`
+
 ## Fachliche Grundannahmen
 
-- Ein Vertrag gehört genau zu einem Kunden.
+- Ein Vertrag gehört genau zu einem Kunden oder genau zu einem Lieferanten.
 - Ein Vertrag kann mehrere Positionen haben.
 - Eine Position kann mehrere zeitgültige Versionen haben.
 - Änderungen gelten immer ab einem bestimmten Datum.
 - Die Planung erfolgt auf Monatsbasis.
-- Für v1 erfolgt keine taggenaue Abgrenzung.
-- Konten und Kostenstellen sind zunächst Freitextfelder.
-- Später können Konten und Kostenstellen über Stammdaten eingeschränkt werden.
+- Für v1 erfolgt keine taggenaue Abgrenzung innerhalb eines Monats.
+- Konten und Kostenstellen sind Freitextfelder.
 - Forecast-Verträge können optional in der Planung berücksichtigt werden.
+- Kostenpositionen werden im Planungsexport als negative Beträge ausgegeben.
 
 ## Statusarten Vertrag
 
 | Status | Bedeutung für Planung |
 |---|---|
-| draft | nicht berücksichtigen |
-| active | standardmäßig berücksichtigen |
-| forecast | nur berücksichtigen, wenn Option aktiviert |
-| cancelled | bis Enddatum berücksichtigen |
-| ended | nicht berücksichtigen |
+| `draft` | nicht berücksichtigen |
+| `active` | berücksichtigen |
+| `forecast` | nur berücksichtigen, wenn Forecast-Option aktiviert ist |
+| `cancelled` | berücksichtigen, solange die Vertragslaufzeit in den Planungsmonat fällt |
+| `ended` | nicht berücksichtigen |
 
-## Datenmodell v1
+## Datenmodell
 
 ### Customer
-
-Kundenstammdaten:
 
 - Kundennummer
 - Name
 - Status
 - Ansprechpartner
 - E-Mail
+- Straße
+- PLZ
+- Ort
+- Land
+- Notizen
+
+### Supplier
+
+- Lieferantennummer
+- Name
+- Status
+- Ansprechpartner
+- E-Mail
+- Straße
+- PLZ
+- Ort
+- Land
 - Notizen
 
 ### Contract
 
-Vertragskopf:
-
-- Kunde
+- Kunde oder Lieferant
 - Vertragsnummer
 - Titel
-- Vertragstyp: revenue / cost
-- Status: draft / active / forecast / cancelled / ended
+- Vertragstyp: `revenue` / `cost`
+- Status: `draft` / `active` / `forecast` / `cancelled` / `ended`
 - Startdatum
 - Enddatum
 - Kündigungsdatum
@@ -73,17 +106,13 @@ Vertragskopf:
 
 ### ContractPosition
 
-Fachliche Position innerhalb eines Vertrags:
-
 - Vertrag
 - Name
-- Positionstyp: revenue / cost
-- Status: active / inactive
+- Positionstyp: `revenue` / `cost`
+- Status: `active` / `inactive`
 - Sortierung
 
 ### ContractPositionVersion
-
-Zeitgültige Werte einer Position:
 
 - Position
 - gültig ab
@@ -93,12 +122,12 @@ Zeitgültige Werte einer Position:
 - Konto
 - Kostenstelle 1
 - Kostenstelle 2
-- Rhythmus: monthly / quarterly / yearly / once
+- Rhythmus: `monthly` / `quarterly` / `yearly` / `once`
 - Fälligkeitstag
 - aktiv
 - Notiz
 
-## Planungslogik v1
+## Planungslogik
 
 Die App erzeugt monatliche Planungszeilen anhand von:
 
@@ -111,49 +140,77 @@ Die App erzeugt monatliche Planungszeilen anhand von:
 - Erlös-/Kostenfilter
 - Forecast-Option
 
-Kostenpositionen werden im Export als negative Beträge ausgegeben.
+Die erzeugten Zeilen enthalten aktuell:
 
-## Import v1
+- Monat
+- Partnername
+- Partnertyp
+- Vertragsnummer
+- Vertragstitel
+- Vertragsstatus
+- Position
+- Positionstyp
+- Betrag
+- Währung
+- Konto
+- Kostenstelle 1
+- Kostenstelle 2
 
-Massenimport über CSV oder Excel.
+## Import
 
-Eine Zeile entspricht einer Vertragspositionsversion.
+Massenimport über CSV oder Excel. Eine Zeile entspricht einer Vertragspositionsversion.
 
 Pflichtspalten:
 
-- customer_name
-- contract_title
-- status
-- position_name
-- valid_from
-- amount
-- account
-- cost_center_1
-- cost_center_2
-- recurrence
+- `customer_name`
+- `contract_title`
+- `status`
+- `position_name`
+- `valid_from`
+- `amount`
+- `account`
+- `cost_center_1`
+- `cost_center_2`
+- `recurrence`
 
 Optionale Spalten:
 
-- customer_no
-- contract_no
-- contract_type
-- position_type
-- contract_start
-- contract_end
-- currency
+- `partner_type`
+- `customer_no`
+- `supplier_name`
+- `supplier_no`
+- `contract_no`
+- `contract_type`
+- `position_type`
+- `contract_start`
+- `contract_end`
+- `currency`
 
-## Export v1
+Hinweis: Für Lieferantenverträge wird `partner_type=supplier` erwartet. Ohne Angabe wird `customer` angenommen.
+
+## Export
 
 Export der erzeugten Planungszeilen als:
 
-- Excel
-- CSV
+- Excel (`planung.xlsx`)
+- CSV (`planung.csv`, Semikolon-getrennt, UTF-8)
+
+## Offene Punkte und nächste Schritte
+
+- Importvorlage um Lieferanten-/Partnerfelder erweitern
+- UI-Texte und Fehlermeldungen vollständig auf Umlaute/UTF-8 prüfen
+- Automatisierte Tests für Planungslogik, Import und Routen ergänzen
+- Echte Alembic-Migrationen statt manueller Aktualisierung in `create_db.py` aufbauen
+- Lösch-/Archivierungslogik für Stammdaten und Verträge klären
+- Umgang mit Kündigungsdatum fachlich schärfen
+- Optional: Konten- und Kostenstellenstamm einführen
 
 ## Roadmap
 
 ### Phase 1: MVP
 
 - Kunden
+- Lieferanten
 - Verträge
 - Positionen
 - Versionen
@@ -170,7 +227,7 @@ Export der erzeugten Planungszeilen als:
 - Dashboard mit Aggregationen
 - Planung nach Konto
 - Planung nach Kostenstelle
-- Planung nach Kunde
+- Planung nach Partner
 - Vertragsereignisse
 
 ### Phase 3
