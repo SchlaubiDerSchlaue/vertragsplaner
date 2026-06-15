@@ -21,6 +21,7 @@ def create_app():
     from app.routes.planning import planning_bp
     from app.routes.imports import imports_bp
     from app.routes.exports import exports_bp
+    from app.routes.api import api_bp
 
     app.register_blueprint(dashboard_bp)
     app.register_blueprint(customers_bp, url_prefix="/customers")
@@ -29,5 +30,6 @@ def create_app():
     app.register_blueprint(planning_bp, url_prefix="/planning")
     app.register_blueprint(imports_bp, url_prefix="/imports")
     app.register_blueprint(exports_bp, url_prefix="/exports")
+    app.register_blueprint(api_bp, url_prefix="/api/v1")
 
     return app
