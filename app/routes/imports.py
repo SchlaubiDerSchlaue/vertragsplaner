@@ -1,12 +1,14 @@
 import os
 from flask import Blueprint, request, render_template, current_app
 from werkzeug.utils import secure_filename
+from app.auth import write_required
 from app.imports import import_contract_rows
 
 imports_bp = Blueprint("imports", __name__)
 
 
 @imports_bp.route("/", methods=["GET", "POST"])
+@write_required
 def import_view():
     message = None
     error = None

@@ -12,7 +12,6 @@ def env_value(name, default=None):
 
 class Config:
     SECRET_KEY = env_value("SECRET_KEY", "dev-secret-key")
-    API_TOKEN = env_value("API_TOKEN")
     SQLALCHEMY_DATABASE_URI = env_value(
         "DATABASE_URL",
         "sqlite:///contract_planning.db"

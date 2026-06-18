@@ -1,10 +1,10 @@
 from datetime import datetime
 from decimal import Decimal
-from hmac import compare_digest
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, g, jsonify, request
 
 from app import db
+from app.auth import authenticate_api_token, role_allows
 from app.models import Customer, Supplier, Contract, ContractPosition
 from app.planning import generate_planning_lines
 
@@ -13,14 +13,6 @@ api_bp = Blueprint("api", __name__)
 
 @api_bp.before_request
 def require_api_token():
-    token = current_app.config.get("API_TOKEN")
-    if not token:
-        return error_response(
-            "api_disabled",
-            "Die JSON-API ist deaktiviert, weil API_TOKEN nicht gesetzt ist.",
-            503,
-        )
-
     auth_header = request.headers.get("Authorization", "")
     prefix = "Bearer "
     if not auth_header.startswith(prefix):
@@ -31,9 +23,13 @@ def require_api_token():
         )
 
     provided_token = auth_header[len(prefix):].strip()
-    if not compare_digest(provided_token, token):
+    api_token = authenticate_api_token(provided_token)
+    if api_token is None:
         return error_response("unauthorized", "Ungueltiger API-Token.", 401)
+    if not role_allows(api_token.role, "read"):
+        return error_response("forbidden", "Der API-Token hat nicht die erforderliche Rolle.", 403)
 
+    g.api_token = api_token
     return None
 
 

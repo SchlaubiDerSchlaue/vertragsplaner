@@ -1,5 +1,6 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from app import db
+from app.auth import write_required
 from app.models import Supplier
 from app.routes.listing import active_filters, apply_sort, get_list_params
 
@@ -50,6 +51,7 @@ def list_suppliers():
 
 
 @suppliers_bp.route("/new", methods=["GET", "POST"])
+@write_required
 def new_supplier():
     supplier = Supplier(status="active")
 
@@ -68,6 +70,7 @@ def new_supplier():
 
 
 @suppliers_bp.route("/<int:supplier_id>/edit", methods=["GET", "POST"])
+@write_required
 def edit_supplier(supplier_id):
     supplier = Supplier.query.get_or_404(supplier_id)
 

@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Admin</h1>
+    <div class="d-flex gap-2">
+        <a class="btn btn-outline-primary" href="{{ url_for('admin.new_user') }}">Neuer Benutzer</a>
+        <a class="btn btn-primary" href="{{ url_for('admin.new_token') }}">Neuer API-Token</a>
+    </div>
+</div>
+
+<h2>Benutzer</h2>
+<table class="table table-striped align-middle">
+    <thead>
+    <tr><th>Name</th><th>Rolle</th><th>Aktiv</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.role }}</td>
+        <td>{{ "ja" if user.is_active else "nein" }}</td>
+        <td class="text-end">
+            <div class="d-inline-flex gap-2">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.edit_user', user_id=user.id) }}">Bearbeiten</a>
+                <form method="post" action="{{ url_for('admin.delete_user', user_id=user.id) }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Benutzer wirklich loeschen?')">Loeschen</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="4" class="text-muted">Noch keine Benutzer vorhanden.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h2 class="mt-4">API-Tokens</h2>
+<table class="table table-striped align-middle">
+    <thead>
+    <tr><th>Name</th><th>Rolle</th><th>Aktiv</th><th>Zuletzt genutzt</th><th></th></tr>
+    </thead>
+    <tbody>
+    {% for token in tokens %}
+    <tr>
+        <td>{{ token.name }}</td>
+        <td>{{ token.role }}</td>
+        <td>{{ "ja" if token.is_active else "nein" }}</td>
+        <td>{{ token.last_used_at or "" }}</td>
+        <td class="text-end">
+            <div class="d-inline-flex gap-2">
+                <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.edit_token', token_id=token.id) }}">Bearbeiten</a>
+                <form method="post" action="{{ url_for('admin.delete_token', token_id=token.id) }}">
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('API-Token wirklich loeschen?')">Loeschen</button>
+                </form>
+            </div>
+        </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-muted">Noch keine API-Tokens vorhanden.</td></tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

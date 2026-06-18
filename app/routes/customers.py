@@ -1,5 +1,6 @@
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from app import db
+from app.auth import write_required
 from app.models import Customer
 from app.routes.listing import active_filters, apply_sort, get_list_params
 
@@ -50,6 +51,7 @@ def list_customers():
 
 
 @customers_bp.route("/new", methods=["GET", "POST"])
+@write_required
 def new_customer():
     customer = Customer(status="active")
 
@@ -68,6 +70,7 @@ def new_customer():
 
 
 @customers_bp.route("/<int:customer_id>/edit", methods=["GET", "POST"])
+@write_required
 def edit_customer(customer_id):
     customer = Customer.query.get_or_404(customer_id)
 

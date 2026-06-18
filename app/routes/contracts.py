@@ -5,6 +5,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from sqlalchemy import func
 
 from app import db
+from app.auth import write_required
 from app.models import Customer, Supplier, Contract, ContractPosition, ContractPositionVersion
 from app.routes.listing import active_filters, apply_sort, get_list_params
 
@@ -150,6 +151,7 @@ def list_positions():
 
 
 @contracts_bp.route("/new", methods=["GET", "POST"])
+@write_required
 def new_contract():
     contract = Contract(status="draft", contract_type="revenue", renewal_type="none")
     customers = Customer.query.order_by(Customer.name).all()
@@ -182,6 +184,7 @@ def contract_detail(contract_id):
 
 
 @contracts_bp.route("/<int:contract_id>/edit", methods=["GET", "POST"])
+@write_required
 def edit_contract(contract_id):
     contract = Contract.query.get_or_404(contract_id)
     customers = Customer.query.order_by(Customer.name).all()
@@ -207,6 +210,7 @@ def edit_contract(contract_id):
 
 
 @contracts_bp.route("/<int:contract_id>/positions/new", methods=["GET", "POST"])
+@write_required
 def new_position(contract_id):
     contract = Contract.query.get_or_404(contract_id)
     position = ContractPosition(contract=contract, position_type=contract.contract_type, status="active")
@@ -226,6 +230,7 @@ def new_position(contract_id):
 
 
 @contracts_bp.route("/positions/<int:position_id>/edit", methods=["GET", "POST"])
+@write_required
 def edit_position(position_id):
     position = ContractPosition.query.get_or_404(position_id)
     contract = position.contract
@@ -244,6 +249,7 @@ def edit_position(position_id):
 
 
 @contracts_bp.route("/positions/<int:position_id>/versions/new", methods=["GET", "POST"])
+@write_required
 def new_version(position_id):
     position = ContractPosition.query.get_or_404(position_id)
     version = ContractPositionVersion(
@@ -276,6 +282,7 @@ def new_version(position_id):
 
 
 @contracts_bp.route("/versions/<int:version_id>/edit", methods=["GET", "POST"])
+@write_required
 def edit_version(version_id):
     version = ContractPositionVersion.query.get_or_404(version_id)
     position = version.position

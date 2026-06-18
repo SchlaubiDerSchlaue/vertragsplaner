@@ -88,29 +88,39 @@ Die Planung erzeugt je Monat eine Zeile pro aktiver, gueltiger Position. Unterst
 
 Kostenpositionen werden in der Planung und im Export als negative Betraege ausgegeben. Vertraege mit Status `forecast` werden nur beruecksichtigt, wenn die Forecast-Option aktiv ist.
 
-## JSON-API fuer KI-Agenten
+## Zugriff und Rollen
 
-Die App stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist fuer lokale oder LAN-interne Agenten und Skripte gedacht. Schreibzugriffe, Importe und Loeschungen sind ueber diese API nicht moeglich.
+Die Weboberflaeche ist zugriffsgeschuetzt. Es gibt drei Rollen:
 
-Vor dem Start muss ein API-Token gesetzt werden.
+- `read`: Daten ansehen, Planung berechnen und Exporte herunterladen
+- `write`: zusaetzlich Kunden, Lieferanten, Vertraege, Positionen, Versionen und Importe bearbeiten
+- `admin`: zusaetzlich Benutzer und API-Tokens verwalten
+
+Nach dem Erzeugen oder Aktualisieren der Datenbank muss mindestens ein Admin-Benutzer angelegt werden:
 
 Windows PowerShell:
 
 ```powershell
-$env:API_TOKEN="ein-langes-zufaelliges-token"
+python create_db.py
+python create_admin.py --username admin
 python run.py
 ```
 
 Windows Eingabeaufforderung (`cmd.exe`):
 
 ```bat
-set API_TOKEN=ein-langes-zufaelliges-token
+python create_db.py
+python create_admin.py --username admin
 python run.py
 ```
 
-In `cmd.exe` den Wert nicht in Anfuehrungszeichen setzen. `set API_TOKEN="abc"` speichert die Anfuehrungszeichen sonst als Teil des Tokens.
+Admins koennen in der Weboberflaeche unter `Admin` weitere Benutzer und API-Tokens anlegen.
 
-Jeder API-Aufruf muss den Token als Bearer-Token senden:
+## JSON-API fuer KI-Agenten
+
+Die App stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist fuer lokale oder LAN-interne Agenten und Skripte gedacht. Schreibzugriffe, Importe und Loeschungen sind ueber diese API nicht moeglich.
+
+Jeder API-Aufruf muss einen in der Admin-Oberflaeche erzeugten API-Token als Bearer-Token senden:
 
 ```bash
 curl -H "Authorization: Bearer ein-langes-zufaelliges-token" http://127.0.0.1:5000/api/v1/health

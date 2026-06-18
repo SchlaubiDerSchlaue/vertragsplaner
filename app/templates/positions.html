@@ -67,7 +67,9 @@
         <td>{{ position.status }}</td>
         <td class="text-end">{{ position.versions|length }}</td>
         <td class="text-end">
+            {% if can_write() %}
             <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('contracts.edit_position', position_id=position.id) }}">Bearbeiten</a>
+            {% endif %}
         </td>
     </tr>
     {% else %}
