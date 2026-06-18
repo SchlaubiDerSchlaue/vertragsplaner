@@ -37,6 +37,13 @@ python create_db.py
 python run.py
 ```
 
+Optional fuer lokale Entwicklung und Tests:
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
 Die App laeuft danach unter:
 
 ```text
