@@ -2,3 +2,6 @@
 instance/
 __pycache__/
 .git/
+.pytest_cache/
+.deploy.env
+.deploy-deps/

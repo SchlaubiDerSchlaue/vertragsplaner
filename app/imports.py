@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import pandas as pd
 from app import db
 from app.models import Customer, Supplier, Contract, ContractPosition, ContractPositionVersion
@@ -130,8 +132,17 @@ def import_contract_rows(file_path):
             recurrence=clean_value(row.get("recurrence"), "monthly"),
         )
 
+        close_previous_versions(position, valid_from)
         db.session.add(version)
         imported += 1
 
     db.session.commit()
     return imported
+
+
+def close_previous_versions(position, valid_from):
+    for old_version in position.versions:
+        if old_version.valid_from < valid_from and (
+            old_version.valid_to is None or old_version.valid_to >= valid_from
+        ):
+            old_version.valid_to = valid_from - timedelta(days=1)

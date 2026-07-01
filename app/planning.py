@@ -22,13 +22,10 @@ def last_day_of_month(d):
 
 
 def contract_is_valid(contract, month_start, month_end, include_forecast=False):
-    if contract.status == "draft":
+    if contract.status in {"draft", "cancelled", "ended"}:
         return False
 
     if contract.status == "forecast" and not include_forecast:
-        return False
-
-    if contract.status == "ended":
         return False
 
     if contract.start_date > month_end:

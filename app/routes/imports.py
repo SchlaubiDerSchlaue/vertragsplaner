@@ -29,5 +29,10 @@ def import_view():
                 message = f"{count} Vertragszeilen importiert."
             except Exception as exc:
                 error = str(exc)
+            finally:
+                try:
+                    os.remove(upload_path)
+                except OSError:
+                    current_app.logger.warning("Import-Upload konnte nicht geloescht werden: %s", upload_path)
 
     return render_template("import.html", message=message, error=error)

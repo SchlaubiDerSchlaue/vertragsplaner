@@ -1,6 +1,9 @@
 import os
 
 
+DEFAULT_SECRET_KEY = "dev-secret-key"
+
+
 def env_value(name, default=None):
     value = os.getenv(name, default)
     if isinstance(value, str):
@@ -11,7 +14,9 @@ def env_value(name, default=None):
 
 
 class Config:
-    SECRET_KEY = env_value("SECRET_KEY", "dev-secret-key")
+    SECRET_KEY = env_value("SECRET_KEY", DEFAULT_SECRET_KEY)
+    if env_value("FLASK_ENV") == "production" and SECRET_KEY == DEFAULT_SECRET_KEY:
+        raise RuntimeError("SECRET_KEY muss in Produktion gesetzt werden.")
     SQLALCHEMY_DATABASE_URI = env_value(
         "DATABASE_URL",
         "sqlite:///contract_planning.db"
