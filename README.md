@@ -123,36 +123,32 @@ python run.py
 
 Admins koennen in der Weboberflaeche unter `Admin` weitere Benutzer und API-Tokens anlegen.
 
-## JSON-API fuer KI-Agenten
+## JSON-API fuer KI-Agenten und Skripte
 
-Die App stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist fuer lokale oder LAN-interne Agenten und Skripte gedacht. Schreibzugriffe, Importe und Loeschungen sind ueber diese API nicht moeglich.
+Die App stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist fuer lokale oder interne Agenten und Automatisierungen gedacht. Schreibzugriffe, Importe und Loeschungen sind ueber diese API nicht moeglich.
 
-Jeder API-Aufruf muss einen in der Admin-Oberflaeche erzeugten API-Token als Bearer-Token senden:
+Kurztest mit API-Token:
 
 ```bash
-curl -H "Authorization: Bearer ein-langes-zufaelliges-token" http://127.0.0.1:5000/api/v1/health
+export VERTRAGSPLANER_BASE_URL="http://127.0.0.1:5000/api/v1"
+export VERTRAGSPLANER_API_TOKEN="dein-token"
+
+curl -H "Authorization: Bearer $VERTRAGSPLANER_API_TOKEN" "$VERTRAGSPLANER_BASE_URL/health"
 ```
 
-Verfuegbare Endpunkte:
+Ausfuehrliche Dokumentation inklusive Endpunkten, Filtern, Antwortformaten und Sicherheitsnotizen steht in [`docs/API.md`](docs/API.md).
 
-- `GET /api/v1/health`
-- `GET /api/v1/customers`
-- `GET /api/v1/suppliers`
-- `GET /api/v1/contracts`
-- `GET /api/v1/contracts/<id>`
-- `GET /api/v1/positions`
-- `GET /api/v1/planning?start_date=YYYY-MM-DD&end_date=YYYY-MM-DD`
+Lauffaehige Beispiele liegen unter [`examples/`](examples/):
 
-Listen-Endpunkte unterstuetzen einfache Filter wie `q`, `status`, `contract_type`, `partner_type`, `limit` und `offset`, soweit sie zum jeweiligen Endpunkt passen.
+- [`examples/curl-api.sh`](examples/curl-api.sh) - Healthcheck, Vertraege und Planung per curl abrufen
+- [`examples/python-api.py`](examples/python-api.py) - kleiner Python-Client mit Planungssumme nach Monat
 
-Beispiele:
+Beispiel:
 
 ```bash
-curl -H "Authorization: Bearer ein-langes-zufaelliges-token" "http://127.0.0.1:5000/api/v1/contracts?status=active&limit=50"
-```
-
-```bash
-curl -H "Authorization: Bearer ein-langes-zufaelliges-token" "http://127.0.0.1:5000/api/v1/planning?start_date=2026-01-01&end_date=2026-12-31&include_revenue=true&include_cost=true&include_forecast=false"
+export VERTRAGSPLANER_API_TOKEN="dein-token"
+./examples/curl-api.sh
+python examples/python-api.py
 ```
 
 Fuer LAN-Zugriff kann die Flask-App auf einer LAN-Adresse gebunden werden, z. B. mit `flask run --host=0.0.0.0`. Die API sollte nicht ohne HTTPS, Reverse Proxy und staerkere Absicherung direkt im Internet veroeffentlicht werden.
