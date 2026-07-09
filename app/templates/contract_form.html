@@ -63,19 +63,21 @@
             <input class="form-control" id="start_date" name="start_date" type="date" value="{{ contract.start_date or '' }}" required>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="end_date">Ende</label>
+            <label class="form-label" for="end_date">Vertragsende / letzter Leistungsmonat</label>
             <input class="form-control" id="end_date" name="end_date" type="date" value="{{ contract.end_date or '' }}">
+            <div class="form-text">Bei manueller/keiner Verlaengerung endet die Planung nach diesem Datum.</div>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="cancellation_date">Kuendigung</label>
+            <label class="form-label" for="cancellation_date">Gekuendigt zum</label>
             <input class="form-control" id="cancellation_date" name="cancellation_date" type="date" value="{{ contract.cancellation_date or '' }}">
+            <div class="form-text">Wenn gesetzt, endet die Planung nach diesem Datum auch bei automatischer Verlaengerung.</div>
         </div>
         <div class="col-md-3">
             <label class="form-label" for="renewal_type">Verlaengerung</label>
             <select class="form-select" id="renewal_type" name="renewal_type">
-                {% for renewal_type in ["none", "manual", "automatic"] %}
-                <option value="{{ renewal_type }}" {% if contract.renewal_type == renewal_type %}selected{% endif %}>{{ renewal_type }}</option>
-                {% endfor %}
+                <option value="none" {% if contract.renewal_type == "none" %}selected{% endif %}>keine - endet zum Vertragsende</option>
+                <option value="manual" {% if contract.renewal_type == "manual" %}selected{% endif %}>manuell - endet zum Vertragsende, ausser Laufzeit wird gepflegt</option>
+                <option value="automatic" {% if contract.renewal_type == "automatic" %}selected{% endif %}>automatisch - laeuft ohne Kuendigung weiter</option>
             </select>
         </div>
         <div class="col-12">

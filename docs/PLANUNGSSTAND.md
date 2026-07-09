@@ -59,8 +59,19 @@ PostgreSQL bleibt als spätere Produktivoption vorgesehen.
 | `draft` | nicht berücksichtigen |
 | `active` | berücksichtigen |
 | `forecast` | nur berücksichtigen, wenn Forecast-Option aktiviert ist |
-| `cancelled` | berücksichtigen, solange die Vertragslaufzeit in den Planungsmonat fällt |
+| `cancelled` | berücksichtigen, solange der Planungsmonat innerhalb der wirksamen Laufzeit liegt |
 | `ended` | nicht berücksichtigen |
+
+## Laufzeit, Kuendigung und Verlaengerung
+
+- `start_date` ist der Beginn der Planung. Vor diesem Datum wird der Vertrag nicht beruecksichtigt.
+- `end_date` ist das Vertragsende bzw. der letzte Leistungszeitraum der gepflegten Laufzeit.
+- `cancellation_date` bedeutet "gekuendigt zum" und ist das wirksame Ende. Wenn dieses Datum gesetzt ist, endet die Planung danach auch bei automatischer Verlaengerung.
+- `renewal_type = none`: keine Verlaengerung; die Planung endet nach `end_date`.
+- `renewal_type = manual`: manuelle Verlaengerung; die Planung endet nach `end_date`, ausser die Laufzeit wird aktiv fortgeschrieben.
+- `renewal_type = automatic`: automatische Verlaengerung; ohne `cancellation_date` laeuft der Vertrag in der Planung ueber `end_date` hinaus weiter.
+- `status = cancelled` ist damit ein fachlicher Status fuer gekuendigte Vertraege; geplant wird trotzdem bis zum wirksamen Ende.
+- `status = ended` beendet die Beruecksichtigung immer sofort.
 
 ## Datenmodell
 

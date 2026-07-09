@@ -345,6 +345,10 @@ def save_contract_from_form(contract):
         errors.append("Bitte ein Startdatum eingeben.")
     if contract.start_date and contract.end_date and contract.end_date < contract.start_date:
         errors.append("Das Enddatum darf nicht vor dem Startdatum liegen.")
+    if contract.start_date and contract.cancellation_date and contract.cancellation_date < contract.start_date:
+        errors.append("Das Kuendigungsdatum darf nicht vor dem Startdatum liegen.")
+    if contract.renewal_type not in {"none", "manual", "automatic"}:
+        errors.append("Bitte einen gueltigen Verlaengerungstyp auswaehlen.")
 
     return errors
 

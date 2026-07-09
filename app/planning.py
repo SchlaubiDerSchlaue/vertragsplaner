@@ -21,6 +21,23 @@ def last_day_of_month(d):
     return date(d.year, d.month, calendar.monthrange(d.year, d.month)[1])
 
 
+def contract_effective_end_date(contract):
+    """Return the date after which a contract is no longer planned.
+
+    Rules:
+    - cancellation_date is the explicit termination date and wins over renewal.
+    - automatic renewal without cancellation keeps the contract open-ended for planning.
+    - manual/no renewal ends at end_date unless a new term is maintained manually.
+    """
+    if contract.cancellation_date:
+        return contract.cancellation_date
+
+    if contract.renewal_type == "automatic":
+        return None
+
+    return contract.end_date
+
+
 def contract_is_valid(contract, month_start, month_end, include_forecast=False):
     if contract.status == "draft":
         return False
@@ -34,7 +51,8 @@ def contract_is_valid(contract, month_start, month_end, include_forecast=False):
     if contract.start_date > month_end:
         return False
 
-    if contract.end_date and contract.end_date < month_start:
+    effective_end_date = contract_effective_end_date(contract)
+    if effective_end_date and effective_end_date < month_start:
         return False
 
     return True

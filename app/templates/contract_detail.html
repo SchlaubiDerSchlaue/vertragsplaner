@@ -17,6 +17,16 @@
     <p><strong>Status:</strong> {{ contract.status }}</p>
     <p><strong>Typ:</strong> {{ contract.contract_type }}</p>
     <p><strong>Laufzeit:</strong> {{ contract.start_date }} bis {{ contract.end_date or "offen" }}</p>
+    <p><strong>Gekuendigt zum:</strong> {{ contract.cancellation_date or "nicht gekuendigt" }}</p>
+    <p><strong>Verlaengerung:</strong>
+        {% if contract.renewal_type == "automatic" %}
+        automatisch - laeuft ohne Kuendigung weiter
+        {% elif contract.renewal_type == "manual" %}
+        manuell - endet zum Vertragsende, ausser Laufzeit wird gepflegt
+        {% else %}
+        keine - endet zum Vertragsende
+        {% endif %}
+    </p>
     {% if contract.description %}
     <p><strong>Beschreibung:</strong> {{ contract.description }}</p>
     {% endif %}
