@@ -9,8 +9,11 @@ from app import db
 from app.models import ApiToken, Contract, ContractPosition, ContractPositionVersion, Customer, Supplier, User
 
 BACKUP_VERSION = 1
-BACKUP_MODELS = [User, ApiToken, Customer, Supplier, Contract, ContractPosition, ContractPositionVersion]
+AUTH_MODELS = [User, ApiToken]
+DATA_MODELS = [Customer, Supplier, Contract, ContractPosition, ContractPositionVersion]
+BACKUP_MODELS = AUTH_MODELS + DATA_MODELS
 DELETE_ORDER = [ContractPositionVersion, ContractPosition, Contract, Customer, Supplier, ApiToken, User]
+DATA_DELETE_ORDER = [ContractPositionVersion, ContractPosition, Contract, Customer, Supplier]
 
 
 def _serialize_value(value):
@@ -37,14 +40,16 @@ def _deserialize_value(column, value):
     return value
 
 
-def export_database_backup():
+def export_database_backup(include_auth=True):
+    models = BACKUP_MODELS if include_auth else DATA_MODELS
     data = {
         "version": BACKUP_VERSION,
         "created_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+        "include_auth": include_auth,
         "tables": {},
     }
 
-    for model in BACKUP_MODELS:
+    for model in models:
         rows = []
         columns = model.__table__.columns
         for item in model.query.order_by(model.id).all():
@@ -68,16 +73,20 @@ def import_database_backup(file_storage):
 
     tables = payload["tables"]
 
-    for model in BACKUP_MODELS:
+    include_auth = bool(payload.get("include_auth", True))
+    models = BACKUP_MODELS if include_auth else DATA_MODELS
+    delete_order = DELETE_ORDER if include_auth else DATA_DELETE_ORDER
+
+    for model in models:
         if model.__tablename__ not in tables:
             raise ValueError(f"Tabelle fehlt in Sicherung: {model.__tablename__}")
 
     try:
-        for model in DELETE_ORDER:
+        for model in delete_order:
             db.session.execute(delete(model))
 
         imported = 0
-        for model in BACKUP_MODELS:
+        for model in models:
             columns = {column.name: column for column in model.__table__.columns}
             for row in tables[model.__tablename__]:
                 unknown = set(row) - set(columns)

@@ -7,10 +7,14 @@
 <div class="card p-3 mb-4 border-warning">
     <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center">
         <div>
-            <h2 class="h5 mb-1">Komplette Datenbank sichern</h2>
-            <div class="text-muted">Lädt alle Kunden, Lieferanten, Verträge, Positionen, Benutzer und Tokens als JSON-Sicherung herunter.</div>
+            <h2 class="h5 mb-1">Datenbank sichern</h2>
+            <div class="text-muted">Lädt Kunden, Lieferanten, Verträge und Positionen als JSON-Sicherung herunter.</div>
         </div>
-        <form method="post" action="{{ url_for('exports.export_database_view') }}">
+        <form method="post" action="{{ url_for('exports.export_database_view') }}" class="d-flex flex-column gap-2 align-items-start align-items-md-end">
+            <label class="form-check mb-0">
+                <input class="form-check-input" type="checkbox" name="include_auth">
+                <span class="form-check-label">Benutzer und API-Tokens mitsichern</span>
+            </label>
             <button class="btn btn-warning">Datenbank exportieren</button>
         </form>
     </div>

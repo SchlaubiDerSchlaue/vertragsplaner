@@ -13,11 +13,13 @@ exports_bp = Blueprint("exports", __name__)
 @exports_bp.route("/database", methods=["POST"])
 @admin_required
 def export_database_view():
-    output = export_database_backup()
+    include_auth = request.form.get("include_auth") == "on"
+    suffix = "komplett" if include_auth else "vertragsdaten"
+    output = export_database_backup(include_auth=include_auth)
     return send_file(
         output,
         as_attachment=True,
-        download_name=f"vertragsplanung-backup-{date.today().isoformat()}.json",
+        download_name=f"vertragsplanung-backup-{suffix}-{date.today().isoformat()}.json",
         mimetype="application/json",
     )
 
