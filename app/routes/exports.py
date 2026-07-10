@@ -2,10 +2,24 @@ from datetime import date, datetime
 
 from flask import Blueprint, make_response, render_template, request, send_file
 
+from app.auth import admin_required
+from app.database_backup import export_database_backup
 from app.exports import export_planning_csv, export_planning_excel
 from app.planning import generate_planning_lines
 
 exports_bp = Blueprint("exports", __name__)
+
+
+@exports_bp.route("/database", methods=["POST"])
+@admin_required
+def export_database_view():
+    output = export_database_backup()
+    return send_file(
+        output,
+        as_attachment=True,
+        download_name=f"vertragsplanung-backup-{date.today().isoformat()}.json",
+        mimetype="application/json",
+    )
 
 
 @exports_bp.route("/", methods=["GET", "POST"])

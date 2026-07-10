@@ -5,33 +5,49 @@
     <title>Vertragsplanung</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .navbar-brand { font-weight: 600; letter-spacing: .01em; }
+        @media (max-width: 991.98px) {
+            .navbar { margin-bottom: 1rem !important; }
+            .navbar .navbar-nav { gap: .15rem; }
+            .navbar .nav-link { padding: .65rem 0; font-size: 1.05rem; }
+            .navbar .navbar-text { display: block; padding-top: .75rem; }
+            main.container { padding-left: 1rem; padding-right: 1rem; }
+            h1 { font-size: 1.6rem; }
+        }
+    </style>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
     <div class="container-fluid">
         <a class="navbar-brand" href="{{ url_for('dashboard.dashboard') }}">Vertragsplanung</a>
-        <div class="navbar-nav">
-            <a class="nav-link" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
-            <a class="nav-link" href="{{ url_for('customers.list_customers') }}">Kunden</a>
-            <a class="nav-link" href="{{ url_for('suppliers.list_suppliers') }}">Lieferanten</a>
-            <a class="nav-link" href="{{ url_for('contracts.list_contracts') }}">Vertraege</a>
-            <a class="nav-link" href="{{ url_for('contracts.list_positions') }}">Positionen</a>
-            <a class="nav-link" href="{{ url_for('planning.planning') }}">Planung</a>
-            {% if can_write() %}
-            <a class="nav-link" href="{{ url_for('imports.import_view') }}">Import</a>
-            {% endif %}
-            <a class="nav-link" href="{{ url_for('exports.export_view') }}">Export</a>
-            {% if can_admin() %}
-            <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
-            {% endif %}
-        </div>
-        <div class="navbar-nav ms-auto">
-            {% if current_user() %}
-            <span class="navbar-text me-3">{{ current_user().username }} ({{ current_user().role }})</span>
-            <form method="post" action="{{ url_for('auth.logout') }}">
-                <button class="btn btn-sm btn-outline-light" type="submit">Abmelden</button>
-            </form>
-            {% endif %}
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar" aria-controls="mainNavbar" aria-expanded="false" aria-label="Navigation umschalten">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="mainNavbar">
+            <div class="navbar-nav me-auto">
+                <a class="nav-link" href="{{ url_for('dashboard.dashboard') }}">Dashboard</a>
+                <a class="nav-link" href="{{ url_for('customers.list_customers') }}">Kunden</a>
+                <a class="nav-link" href="{{ url_for('suppliers.list_suppliers') }}">Lieferanten</a>
+                <a class="nav-link" href="{{ url_for('contracts.list_contracts') }}">Verträge</a>
+                <a class="nav-link" href="{{ url_for('contracts.list_positions') }}">Positionen</a>
+                <a class="nav-link" href="{{ url_for('planning.planning') }}">Planung</a>
+                {% if can_write() %}
+                <a class="nav-link" href="{{ url_for('imports.import_view') }}">Import</a>
+                {% endif %}
+                <a class="nav-link" href="{{ url_for('exports.export_view') }}">Export</a>
+                {% if can_admin() %}
+                <a class="nav-link" href="{{ url_for('admin.index') }}">Admin</a>
+                {% endif %}
+            </div>
+            <div class="navbar-nav ms-auto">
+                {% if current_user() %}
+                <span class="navbar-text me-lg-3">{{ current_user().username }} ({{ current_user().role }})</span>
+                <form method="post" action="{{ url_for('auth.logout') }}">
+                    <button class="btn btn-sm btn-outline-light" type="submit">Abmelden</button>
+                </form>
+                {% endif %}
+            </div>
         </div>
     </div>
 </nav>
@@ -49,5 +65,6 @@
 
     {% block content %}{% endblock %}
 </main>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

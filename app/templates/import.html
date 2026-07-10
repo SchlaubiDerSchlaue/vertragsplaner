@@ -1,15 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Vertragsdaten importieren</h1>
+<h1>Import</h1>
 
 <div class="alert alert-info">
-    Unterstützt werden CSV- und Excel-Dateien. Eine Zeile entspricht einer Vertragspositionsversion.
+    CSV- und Excel-Dateien ergänzen Vertragsdaten. Eine JSON-Sicherung stellt die komplette Datenbank wieder her und ersetzt den aktuellen Stand.
 </div>
 
 <form method="post" enctype="multipart/form-data" class="card p-3">
-    <label class="form-label">Datei auswählen</label>
-    <input type="file" name="file" class="form-control" accept=".csv,.xlsx" required>
+    <div class="mb-3">
+        <label class="form-label" for="import_type">Import-Art</label>
+        <select id="import_type" name="import_type" class="form-select">
+            <option value="contracts">Vertragsdaten aus CSV/Excel ergänzen</option>
+            {% if can_admin() %}
+            <option value="backup">Komplette Datenbank aus JSON-Sicherung wiederherstellen</option>
+            {% endif %}
+        </select>
+    </div>
+
+    <label class="form-label" for="file">Datei auswählen</label>
+    <input id="file" type="file" name="file" class="form-control" accept=".csv,.xlsx,.json" required>
 
     <button class="btn btn-primary mt-3">Import starten</button>
 </form>

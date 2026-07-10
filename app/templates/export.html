@@ -1,7 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Planungsdaten exportieren</h1>
+<h1>Export</h1>
+
+{% if can_admin() %}
+<div class="card p-3 mb-4 border-warning">
+    <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-center">
+        <div>
+            <h2 class="h5 mb-1">Komplette Datenbank sichern</h2>
+            <div class="text-muted">Lädt alle Kunden, Lieferanten, Verträge, Positionen, Benutzer und Tokens als JSON-Sicherung herunter.</div>
+        </div>
+        <form method="post" action="{{ url_for('exports.export_database_view') }}">
+            <button class="btn btn-warning">Datenbank exportieren</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<h2 class="h4">Planungsdaten exportieren</h2>
 
 {% if error %}
 <div class="alert alert-danger">{{ error }}</div>
