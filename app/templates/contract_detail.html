@@ -16,6 +16,12 @@
     <p><strong>Vertragsnummer:</strong> {{ contract.contract_no or "" }}</p>
     <p><strong>Status:</strong> {{ contract.status }}</p>
     <p><strong>Typ:</strong> {{ contract.contract_type }}</p>
+    {% if contract.contract_link %}
+    <p><strong>Vertrag:</strong> <a href="{{ contract.contract_link }}" target="_blank" rel="noopener noreferrer">Link oeffnen</a></p>
+    {% endif %}
+    {% if contract.invoice_link %}
+    <p><strong>Rechnungen:</strong> <a href="{{ contract.invoice_link }}" target="_blank" rel="noopener noreferrer">Link oeffnen</a></p>
+    {% endif %}
     <p><strong>Laufzeit:</strong> {{ contract.start_date }} bis {{ contract.end_date or "offen" }}</p>
     <p><strong>Gekuendigt zum:</strong> {{ contract.cancellation_date or "nicht gekuendigt" }}</p>
     <p><strong>Verlaengerung:</strong>

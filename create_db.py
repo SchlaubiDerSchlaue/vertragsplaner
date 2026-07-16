@@ -34,6 +34,11 @@ def migrate_contract_table(connection):
     columns = get_columns(connection, "contract")
     needs_supplier_id = "supplier_id" not in columns
     needs_nullable_customer = columns.get("customer_id", {}).get("notnull", False)
+    for column_name in ["contract_link", "invoice_link"]:
+        if column_name not in columns:
+            connection.exec_driver_sql(
+                f"ALTER TABLE contract ADD COLUMN {column_name} VARCHAR(2048)"
+            )
 
     if not needs_supplier_id and not needs_nullable_customer:
         return
@@ -53,6 +58,8 @@ def migrate_contract_table(connection):
             cancellation_date DATE,
             renewal_type VARCHAR(50),
             responsible VARCHAR(255),
+            contract_link VARCHAR(2048),
+            invoice_link VARCHAR(2048),
             description TEXT,
             created_at DATETIME,
             updated_at DATETIME,
@@ -73,6 +80,8 @@ def migrate_contract_table(connection):
             cancellation_date,
             renewal_type,
             responsible,
+            contract_link,
+            invoice_link,
             description,
             created_at,
             updated_at
@@ -89,6 +98,8 @@ def migrate_contract_table(connection):
             cancellation_date,
             renewal_type,
             responsible,
+            contract_link,
+            invoice_link,
             description,
             created_at,
             updated_at

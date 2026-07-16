@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from decimal import Decimal, InvalidOperation
+from urllib.parse import urlparse
 
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 from sqlalchemy import func
@@ -28,6 +29,8 @@ def list_contracts():
                 Contract.contract_no.ilike(search),
                 Contract.title.ilike(search),
                 Contract.responsible.ilike(search),
+                Contract.contract_link.ilike(search),
+                Contract.invoice_link.ilike(search),
                 Customer.name.ilike(search),
                 Supplier.name.ilike(search),
             )
@@ -327,6 +330,8 @@ def save_contract_from_form(contract):
     contract.cancellation_date = parse_date(request.form.get("cancellation_date"))
     contract.renewal_type = request.form.get("renewal_type", "none")
     contract.responsible = request.form.get("responsible", "").strip() or None
+    contract.contract_link = normalize_url(request.form.get("contract_link"))
+    contract.invoice_link = normalize_url(request.form.get("invoice_link"))
     contract.description = request.form.get("description", "").strip() or None
 
     if contract.customer_id and contract.supplier_id:
@@ -349,6 +354,10 @@ def save_contract_from_form(contract):
         errors.append("Das Kuendigungsdatum darf nicht vor dem Startdatum liegen.")
     if contract.renewal_type not in {"none", "manual", "automatic"}:
         errors.append("Bitte einen gueltigen Verlaengerungstyp auswaehlen.")
+    if not is_valid_url(contract.contract_link):
+        errors.append("Bitte einen gueltigen Link zum Vertrag eingeben.")
+    if not is_valid_url(contract.invoice_link):
+        errors.append("Bitte einen gueltigen Link zu Rechnungen eingeben.")
 
     return errors
 
@@ -442,3 +451,19 @@ def parse_int(value):
         return int(value)
     except (TypeError, ValueError):
         return None
+
+
+def normalize_url(value):
+    value = (value or "").strip()
+    if not value:
+        return None
+    if "://" not in value:
+        value = f"https://{value}"
+    return value
+
+
+def is_valid_url(value):
+    if not value:
+        return True
+    parsed = urlparse(value)
+    return parsed.scheme in {"http", "https"} and bool(parsed.netloc)

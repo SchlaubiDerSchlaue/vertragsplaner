@@ -98,6 +98,8 @@ def import_contract_rows(file_path):
                 contract_type=clean_value(row.get("contract_type"), "cost" if supplier else "revenue"),
                 start_date=pd.to_datetime(contract_start_raw).date() if contract_start_raw else valid_from,
                 end_date=pd.to_datetime(contract_end_raw).date() if contract_end_raw else None,
+                contract_link=clean_value(row.get("contract_link")),
+                invoice_link=clean_value(row.get("invoice_link")),
             )
             db.session.add(contract)
             db.session.flush()

@@ -38,6 +38,14 @@
             <label class="form-label" for="responsible">Verantwortlich</label>
             <input class="form-control" id="responsible" name="responsible" value="{{ contract.responsible or '' }}">
         </div>
+        <div class="col-md-6">
+            <label class="form-label" for="contract_link">Link zum Vertrag</label>
+            <input class="form-control" id="contract_link" name="contract_link" type="url" placeholder="https://..." value="{{ contract.contract_link or '' }}">
+        </div>
+        <div class="col-md-6">
+            <label class="form-label" for="invoice_link">Link zu Rechnungen</label>
+            <input class="form-control" id="invoice_link" name="invoice_link" type="url" placeholder="https://..." value="{{ contract.invoice_link or '' }}">
+        </div>
         <div class="col-md-8">
             <label class="form-label" for="title">Titel *</label>
             <input class="form-control" id="title" name="title" value="{{ contract.title or '' }}" required>

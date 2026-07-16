@@ -105,6 +105,8 @@ class Contract(db.Model):
     renewal_type = db.Column(db.String(50), default="none")
 
     responsible = db.Column(db.String(255))
+    contract_link = db.Column(db.String(2048))
+    invoice_link = db.Column(db.String(2048))
     description = db.Column(db.Text)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

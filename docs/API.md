@@ -153,7 +153,7 @@ Filter fuer die Liste:
 
 | Parameter | Beschreibung |
 | --- | --- |
-| `q` | Suche in Vertragsnummer, Titel, Verantwortlichem und Partnername |
+| `q` | Suche in Vertragsnummer, Titel, Verantwortlichem, Vertrags-/Rechnungslink und Partnername |
 | `status` | Exakter Vertragsstatus, z. B. `active` oder `forecast` |
 | `contract_type` | `revenue` oder `cost` |
 | `partner_type` | `customer` oder `supplier` |

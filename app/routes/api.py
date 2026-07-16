@@ -194,6 +194,8 @@ def apply_contract_filters(query):
                 Contract.contract_no.ilike(search),
                 Contract.title.ilike(search),
                 Contract.responsible.ilike(search),
+                Contract.contract_link.ilike(search),
+                Contract.invoice_link.ilike(search),
                 Customer.name.ilike(search),
                 Supplier.name.ilike(search),
             )
@@ -303,6 +305,8 @@ def serialize_contract(contract, include_positions=False):
         "cancellation_date": iso_date(contract.cancellation_date),
         "renewal_type": contract.renewal_type,
         "responsible": contract.responsible,
+        "contract_link": contract.contract_link,
+        "invoice_link": contract.invoice_link,
         "description": contract.description,
         "partner": serialize_partner_ref(contract),
         "created_at": iso_datetime(contract.created_at),

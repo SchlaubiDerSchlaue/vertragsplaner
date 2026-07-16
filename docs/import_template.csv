@@ -1,4 +1,4 @@
-customer_name;customer_no;contract_no;contract_title;status;contract_type;contract_start;contract_end;position_name;position_type;valid_from;amount;currency;account;cost_center_1;cost_center_2;recurrence
-Muster GmbH;K-1001;V-1001;Wartungsvertrag;active;revenue;2026-01-01;;Grundgebühr;revenue;2026-01-01;1000;EUR;8400;Vertrieb;Nord;monthly
-Muster GmbH;K-1001;V-1001;Wartungsvertrag;active;revenue;2026-01-01;;Zusatzmodul;revenue;2026-01-01;250;EUR;8410;Produkt A;Nord;monthly
-Forecast AG;K-1002;V-1002;Geplanter Vertrag;forecast;revenue;2026-03-01;;Forecast-Leistung;revenue;2026-03-01;1500;EUR;8400;Vertrieb;Süd;monthly
+customer_name;customer_no;contract_no;contract_title;status;contract_type;contract_start;contract_end;contract_link;invoice_link;position_name;position_type;valid_from;amount;currency;account;cost_center_1;cost_center_2;recurrence
+Muster GmbH;K-1001;V-1001;Wartungsvertrag;active;revenue;2026-01-01;;https://example.com/vertrag;https://example.com/rechnungen;Grundgebühr;revenue;2026-01-01;1000;EUR;8400;Vertrieb;Nord;monthly
+Muster GmbH;K-1001;V-1001;Wartungsvertrag;active;revenue;2026-01-01;;https://example.com/vertrag;https://example.com/rechnungen;Zusatzmodul;revenue;2026-01-01;250;EUR;8410;Produkt A;Nord;monthly
+Forecast AG;K-1002;V-1002;Geplanter Vertrag;forecast;revenue;2026-03-01;;;;Forecast-Leistung;revenue;2026-03-01;1500;EUR;8400;Vertrieb;Süd;monthly
