@@ -67,6 +67,11 @@ class ContractLinksTestCase(unittest.TestCase):
         self.assertIn(b"https://example.com/vertrag", detail.data)
         self.assertIn(b"https://example.com/rechnungen", detail.data)
 
+        overview = self.client.get("/contracts/")
+        self.assertEqual(overview.status_code, 200)
+        self.assertIn(b"https://example.com/vertrag", overview.data)
+        self.assertIn(b"https://example.com/rechnungen", overview.data)
+
 
 if __name__ == "__main__":
     unittest.main()

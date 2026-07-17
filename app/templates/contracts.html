@@ -59,6 +59,8 @@
         <th>{{ sort_link('contracts.list_contracts', 'Status', 'status', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('contracts.list_contracts', 'Start', 'start_date', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('contracts.list_contracts', 'Ende', 'end_date', sort, direction, sort_filters) }}</th>
+        <th>Vertrag</th>
+        <th>Rechnungen</th>
         <th></th>
     </tr>
     </thead>
@@ -77,6 +79,16 @@
         <td>{{ contract.status }}</td>
         <td>{{ contract.start_date }}</td>
         <td>{{ contract.end_date or "" }}</td>
+        <td>
+            {% if contract.contract_link %}
+            <a href="{{ contract.contract_link }}" target="_blank" rel="noopener noreferrer">Link</a>
+            {% endif %}
+        </td>
+        <td>
+            {% if contract.invoice_link %}
+            <a href="{{ contract.invoice_link }}" target="_blank" rel="noopener noreferrer">Link</a>
+            {% endif %}
+        </td>
         <td class="text-end">
             {% if can_write() %}
             <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('contracts.edit_contract', contract_id=contract.id) }}">Bearbeiten</a>
@@ -85,7 +97,7 @@
     </tr>
     {% else %}
     <tr>
-        <td colspan="9" class="text-muted">Noch keine Vertraege vorhanden.</td>
+        <td colspan="11" class="text-muted">Noch keine Vertraege vorhanden.</td>
     </tr>
     {% endfor %}
     </tbody>
