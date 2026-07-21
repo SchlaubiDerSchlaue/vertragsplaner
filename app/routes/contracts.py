@@ -1,4 +1,5 @@
-from datetime import datetime, timedelta
+import datetime as dt
+from datetime import date, datetime, timedelta
 from decimal import Decimal, InvalidOperation
 from urllib.parse import urlparse
 
@@ -19,6 +20,7 @@ def list_contracts():
     status = request.args.get("status", "").strip()
     contract_type = request.args.get("contract_type", "").strip()
     partner_type = request.args.get("partner_type", "").strip()
+    cancellation_due = request.args.get("cancellation_due", "").strip()
     sort, direction = get_list_params("start_date", "desc")
 
     query = Contract.query.outerjoin(Customer).outerjoin(Supplier)
@@ -43,6 +45,8 @@ def list_contracts():
         query = query.filter(Contract.customer_id.isnot(None))
     elif partner_type == "supplier":
         query = query.filter(Contract.supplier_id.isnot(None))
+    today = dt.date(date.today().year, date.today().month, date.today().day)
+    query = apply_cancellation_due_filter(query, cancellation_due, today=today)
 
     partner_name = func.coalesce(Customer.name, Supplier.name)
     sort_map = {
@@ -56,6 +60,11 @@ def list_contracts():
         "responsible": Contract.responsible,
     }
     contracts = apply_sort(query, sort, direction, sort_map, "start_date").all()
+    if cancellation_due in {"now", "30", "60", "90"}:
+        contracts = [
+            contract for contract in contracts
+            if contract_matches_cancellation_due(contract, cancellation_due, today)
+        ]
     statuses = [row[0] for row in db.session.query(Contract.status).distinct().order_by(Contract.status).all() if row[0]]
     contract_types = [row[0] for row in db.session.query(Contract.contract_type).distinct().order_by(Contract.contract_type).all() if row[0]]
 
@@ -67,6 +76,7 @@ def list_contracts():
             "status": status,
             "contract_type": contract_type,
             "partner_type": partner_type,
+            "cancellation_due": cancellation_due,
         },
         sort=sort,
         direction=direction,
@@ -75,6 +85,7 @@ def list_contracts():
             status=status,
             contract_type=contract_type,
             partner_type=partner_type,
+            cancellation_due=cancellation_due,
         ),
         statuses=statuses,
         contract_types=contract_types,
@@ -309,6 +320,30 @@ def edit_version(version_id):
     )
 
 
+def apply_cancellation_due_filter(query, cancellation_due, today=None):
+    if cancellation_due not in {"now", "30", "60", "90"}:
+        return query
+
+    today = today or date.today()
+    return query.filter(
+        Contract.end_date.isnot(None),
+        Contract.cancellation_period_value.isnot(None),
+        Contract.cancellation_period_unit.isnot(None),
+        Contract.status.notin_(["cancelled", "ended"]),
+        Contract.end_date >= today,
+    )
+
+
+def contract_matches_cancellation_due(contract, cancellation_due, today=None):
+    if cancellation_due not in {"now", "30", "60", "90"}:
+        return True
+
+    today = today or date.today()
+    horizon = today if cancellation_due == "now" else today + timedelta(days=int(cancellation_due))
+    deadline = contract.cancellation_deadline
+    return deadline is not None and deadline <= horizon
+
+
 def save_contract_from_form(contract):
     errors = []
 
@@ -328,6 +363,8 @@ def save_contract_from_form(contract):
     contract.start_date = parse_date(request.form.get("start_date"))
     contract.end_date = parse_date(request.form.get("end_date"))
     contract.cancellation_date = parse_date(request.form.get("cancellation_date"))
+    contract.cancellation_period_value = parse_int(request.form.get("cancellation_period_value"))
+    contract.cancellation_period_unit = request.form.get("cancellation_period_unit", "months")
     contract.renewal_type = request.form.get("renewal_type", "none")
     contract.responsible = request.form.get("responsible", "").strip() or None
     contract.contract_link = normalize_url(request.form.get("contract_link"))
@@ -352,6 +389,12 @@ def save_contract_from_form(contract):
         errors.append("Das Enddatum darf nicht vor dem Startdatum liegen.")
     if contract.start_date and contract.cancellation_date and contract.cancellation_date < contract.start_date:
         errors.append("Das Kuendigungsdatum darf nicht vor dem Startdatum liegen.")
+    if contract.cancellation_period_value is None:
+        contract.cancellation_period_unit = None
+    elif contract.cancellation_period_value < 0:
+        errors.append("Die Kuendigungsfrist darf nicht negativ sein.")
+    elif contract.cancellation_period_unit not in {"days", "weeks", "months"}:
+        errors.append("Bitte eine gueltige Einheit fuer die Kuendigungsfrist auswaehlen.")
     if contract.renewal_type not in {"none", "manual", "automatic"}:
         errors.append("Bitte einen gueltigen Verlaengerungstyp auswaehlen.")
     if not is_valid_url(contract.contract_link):

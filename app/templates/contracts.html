@@ -40,6 +40,16 @@
             <option value="supplier" {% if filters.partner_type == "supplier" %}selected{% endif %}>Lieferant</option>
         </select>
     </div>
+    <div class="col-md-2">
+        <label class="form-label" for="contract-cancellation-due">Kuendigung</label>
+        <select class="form-select" id="contract-cancellation-due" name="cancellation_due">
+            <option value="">Alle</option>
+            <option value="now" {% if filters.cancellation_due == "now" %}selected{% endif %}>jetzt kuendbar</option>
+            <option value="30" {% if filters.cancellation_due == "30" %}selected{% endif %}>in 30 Tagen</option>
+            <option value="60" {% if filters.cancellation_due == "60" %}selected{% endif %}>in 60 Tagen</option>
+            <option value="90" {% if filters.cancellation_due == "90" %}selected{% endif %}>in 90 Tagen</option>
+        </select>
+    </div>
     <input type="hidden" name="sort" value="{{ sort }}">
     <input type="hidden" name="direction" value="{{ direction }}">
     <div class="col-md-auto">
@@ -59,6 +69,8 @@
         <th>{{ sort_link('contracts.list_contracts', 'Status', 'status', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('contracts.list_contracts', 'Start', 'start_date', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('contracts.list_contracts', 'Ende', 'end_date', sort, direction, sort_filters) }}</th>
+        <th>Kuendigungsfrist</th>
+        <th>Kuendbar bis</th>
         <th>Vertrag</th>
         <th>Rechnungen</th>
         <th></th>
@@ -79,6 +91,8 @@
         <td>{{ contract.status }}</td>
         <td>{{ contract.start_date }}</td>
         <td>{{ contract.end_date or "" }}</td>
+        <td>{{ contract.cancellation_period_label }}</td>
+        <td>{{ contract.cancellation_deadline or "" }}</td>
         <td>
             {% if contract.contract_link %}
             <a href="{{ contract.contract_link }}" target="_blank" rel="noopener noreferrer">Link</a>
@@ -97,7 +111,7 @@
     </tr>
     {% else %}
     <tr>
-        <td colspan="11" class="text-muted">Noch keine Vertraege vorhanden.</td>
+        <td colspan="13" class="text-muted">Noch keine Vertraege vorhanden.</td>
     </tr>
     {% endfor %}
     </tbody>

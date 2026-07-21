@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import calendar
 from app import db
 
 
@@ -102,6 +103,8 @@ class Contract(db.Model):
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date)
     cancellation_date = db.Column(db.Date)
+    cancellation_period_value = db.Column(db.Integer)
+    cancellation_period_unit = db.Column(db.String(20))
     renewal_type = db.Column(db.String(50), default="none")
 
     responsible = db.Column(db.String(255))
@@ -115,6 +118,33 @@ class Contract(db.Model):
     customer = db.relationship("Customer", back_populates="contracts")
     supplier = db.relationship("Supplier", back_populates="contracts")
     positions = db.relationship("ContractPosition", back_populates="contract", cascade="all, delete-orphan")
+
+    @property
+    def cancellation_period_label(self):
+        if not self.cancellation_period_value or not self.cancellation_period_unit:
+            return ""
+
+        unit_labels = {
+            "days": ("Tag", "Tage"),
+            "weeks": ("Woche", "Wochen"),
+            "months": ("Monat", "Monate"),
+        }
+        singular, plural = unit_labels.get(self.cancellation_period_unit, (self.cancellation_period_unit, self.cancellation_period_unit))
+        label = singular if self.cancellation_period_value == 1 else plural
+        return f"{self.cancellation_period_value} {label}"
+
+    @property
+    def cancellation_deadline(self):
+        if not self.end_date or not self.cancellation_period_value or not self.cancellation_period_unit:
+            return None
+
+        if self.cancellation_period_unit == "days":
+            return self.end_date - timedelta(days=self.cancellation_period_value)
+        if self.cancellation_period_unit == "weeks":
+            return self.end_date - timedelta(weeks=self.cancellation_period_value)
+        if self.cancellation_period_unit == "months":
+            return subtract_months(self.end_date, self.cancellation_period_value)
+        return None
 
     @property
     def partner(self):
@@ -196,3 +226,11 @@ class ContractPositionVersion(db.Model):
 
     def __repr__(self):
         return f"<ContractPositionVersion {self.position_id} {self.valid_from}>"
+
+
+def subtract_months(value, months):
+    month_index = value.year * 12 + value.month - 1 - months
+    year = month_index // 12
+    month = month_index % 12 + 1
+    day = min(value.day, calendar.monthrange(year, month)[1])
+    return value.replace(year=year, month=month, day=day)

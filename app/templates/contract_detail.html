@@ -24,6 +24,8 @@
     {% endif %}
     <p><strong>Laufzeit:</strong> {{ contract.start_date }} bis {{ contract.end_date or "offen" }}</p>
     <p><strong>Gekuendigt zum:</strong> {{ contract.cancellation_date or "nicht gekuendigt" }}</p>
+    <p><strong>Kuendigungsfrist:</strong> {{ contract.cancellation_period_label or "nicht gepflegt" }}</p>
+    <p><strong>Kuendbar bis:</strong> {{ contract.cancellation_deadline or "nicht berechenbar" }}</p>
     <p><strong>Verlaengerung:</strong>
         {% if contract.renewal_type == "automatic" %}
         automatisch - laeuft ohne Kuendigung weiter

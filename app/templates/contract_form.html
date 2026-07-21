@@ -81,6 +81,18 @@
             <div class="form-text">Wenn gesetzt, endet die Planung nach diesem Datum auch bei automatischer Verlaengerung.</div>
         </div>
         <div class="col-md-3">
+            <label class="form-label" for="cancellation_period_value">Kuendigungsfrist</label>
+            <div class="input-group">
+                <input class="form-control" id="cancellation_period_value" name="cancellation_period_value" type="number" min="0" value="{{ contract.cancellation_period_value or '' }}">
+                <select class="form-select" id="cancellation_period_unit" name="cancellation_period_unit">
+                    <option value="days" {% if contract.cancellation_period_unit == "days" %}selected{% endif %}>Tage</option>
+                    <option value="weeks" {% if contract.cancellation_period_unit == "weeks" %}selected{% endif %}>Wochen</option>
+                    <option value="months" {% if not contract.cancellation_period_unit or contract.cancellation_period_unit == "months" %}selected{% endif %}>Monate</option>
+                </select>
+            </div>
+            <div class="form-text">Ermittelt zusammen mit dem Vertragsende, bis wann gekuendigt werden muss.</div>
+        </div>
+        <div class="col-md-3">
             <label class="form-label" for="renewal_type">Verlaengerung</label>
             <select class="form-select" id="renewal_type" name="renewal_type">
                 <option value="none" {% if contract.renewal_type == "none" %}selected{% endif %}>keine - endet zum Vertragsende</option>

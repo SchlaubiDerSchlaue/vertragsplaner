@@ -34,10 +34,16 @@ def migrate_contract_table(connection):
     columns = get_columns(connection, "contract")
     needs_supplier_id = "supplier_id" not in columns
     needs_nullable_customer = columns.get("customer_id", {}).get("notnull", False)
-    for column_name in ["contract_link", "invoice_link"]:
+    optional_columns = {
+        "contract_link": "VARCHAR(2048)",
+        "invoice_link": "VARCHAR(2048)",
+        "cancellation_period_value": "INTEGER",
+        "cancellation_period_unit": "VARCHAR(20)",
+    }
+    for column_name, column_type in optional_columns.items():
         if column_name not in columns:
             connection.exec_driver_sql(
-                f"ALTER TABLE contract ADD COLUMN {column_name} VARCHAR(2048)"
+                f"ALTER TABLE contract ADD COLUMN {column_name} {column_type}"
             )
 
     if not needs_supplier_id and not needs_nullable_customer:
@@ -56,6 +62,8 @@ def migrate_contract_table(connection):
             start_date DATE NOT NULL,
             end_date DATE,
             cancellation_date DATE,
+            cancellation_period_value INTEGER,
+            cancellation_period_unit VARCHAR(20),
             renewal_type VARCHAR(50),
             responsible VARCHAR(255),
             contract_link VARCHAR(2048),
@@ -78,6 +86,8 @@ def migrate_contract_table(connection):
             start_date,
             end_date,
             cancellation_date,
+            cancellation_period_value,
+            cancellation_period_unit,
             renewal_type,
             responsible,
             contract_link,
@@ -96,6 +106,8 @@ def migrate_contract_table(connection):
             start_date,
             end_date,
             cancellation_date,
+            cancellation_period_value,
+            cancellation_period_unit,
             renewal_type,
             responsible,
             contract_link,
