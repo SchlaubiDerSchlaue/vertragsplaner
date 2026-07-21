@@ -21,34 +21,34 @@ CUSTOMERS = [
         "postal_code": "24103",
         "city": "Kiel",
         "country": "Deutschland",
-        "notes": "Rahmenkunde fuer wiederkehrende Beratungsleistungen.",
+        "notes": "Rahmenkunde für wiederkehrende Beratungsleistungen.",
     },
     {
         "customer_no": "K-1002",
         "name": "Nordlicht Pflege AG",
         "contact_name": "Matthias Reuter",
         "email": "matthias.reuter@nordlicht-pflege.example",
-        "street": "Hafenstrasse 8",
+        "street": "Hafenstraße 8",
         "postal_code": "23552",
-        "city": "Luebeck",
+        "city": "Lübeck",
         "country": "Deutschland",
-        "notes": "Mehrere Standorte, Abrechnung quartalsweise pruefen.",
+        "notes": "Mehrere Standorte, Abrechnung quartalsweise prüfen.",
     },
     {
         "customer_no": "K-1003",
         "name": "Hoyer Handel & Service",
         "contact_name": "Michaela Hoyer",
         "email": "kontakt@hoyer-handel.example",
-        "street": "Dorfstrasse 4",
+        "street": "Dorfstraße 4",
         "postal_code": "24646",
         "city": "Warder",
         "country": "Deutschland",
-        "notes": "Demo-Kunde fuer Projekt- und Servicepositionen.",
+        "notes": "Demo-Kunde für Projekt- und Servicepositionen.",
     },
     {
         "customer_no": "K-1004",
         "name": "Baltic Events UG",
-        "contact_name": "Svenja Krueger",
+        "contact_name": "Svenja Krüger",
         "email": "svenja.krueger@baltic-events.example",
         "street": "Markt 2",
         "postal_code": "18055",
@@ -77,9 +77,9 @@ SUPPLIERS = [
         "email": "jan.petersen@officepro.example",
         "street": "Gewerbering 19",
         "postal_code": "24534",
-        "city": "Neumuenster",
+        "city": "Neumünster",
         "country": "Deutschland",
-        "notes": "Hardware-Leasing mit automatischer Verlaengerung.",
+        "notes": "Hardware-Leasing mit automatischer Verlängerung.",
     },
     {
         "supplier_no": "L-2003",
@@ -90,7 +90,7 @@ SUPPLIERS = [
         "postal_code": "28195",
         "city": "Bremen",
         "country": "Deutschland",
-        "notes": "Internet- und Mobilfunkvertraege.",
+        "notes": "Internet- und Mobilfunkverträge.",
     },
     {
         "supplier_no": "L-2004",
@@ -101,7 +101,7 @@ SUPPLIERS = [
         "postal_code": "24768",
         "city": "Rendsburg",
         "country": "Deutschland",
-        "notes": "Jaehrliche Versicherungspolicen.",
+        "notes": "Jährliche Versicherungspolicen.",
     },
 ]
 
@@ -118,7 +118,7 @@ CONTRACTS = [
         "cancellation_date": date(2026, 9, 30),
         "renewal_type": "automatic",
         "responsible": "Arne",
-        "description": "Monatliche Wartung, kleinere Anpassungen und Support fuer interne Vertragsplanung.",
+        "description": "Monatliche Wartung, kleinere Anpassungen und Support für interne Vertragsplanung.",
         "positions": [
             {
                 "name": "Basiswartung",
@@ -152,7 +152,7 @@ CONTRACTS = [
         "cancellation_date": date(2027, 10, 31),
         "renewal_type": "automatic",
         "responsible": "Claudia",
-        "description": "Lizenz- und Servicevertrag fuer mehrere Pflegeeinrichtungen.",
+        "description": "Lizenz- und Servicevertrag für mehrere Pflegeeinrichtungen.",
         "positions": [
             {
                 "name": "Lizenzpaket 5 Standorte",
@@ -185,7 +185,7 @@ CONTRACTS = [
         "cancellation_date": date(2027, 4, 30),
         "renewal_type": "manual",
         "responsible": "Arne",
-        "description": "Geplanter Servicevertrag fuer Warenwirtschaft, Reporting und Datenpflege.",
+        "description": "Geplanter Servicevertrag für Warenwirtschaft, Reporting und Datenpflege.",
         "positions": [
             {
                 "name": "Servicepauschale",
@@ -217,7 +217,7 @@ CONTRACTS = [
         "cancellation_date": None,
         "renewal_type": "none",
         "responsible": "Claudia",
-        "description": "Abgeschlossener Saisonvertrag als Beispiel fuer beendete Vertraege.",
+        "description": "Abgeschlossener Saisonvertrag als Beispiel für beendete Verträge.",
         "positions": [
             {
                 "name": "Saison-Support",
@@ -274,7 +274,7 @@ CONTRACTS = [
         "cancellation_date": date(2028, 11, 30),
         "renewal_type": "manual",
         "responsible": "Arne",
-        "description": "Leasingvertrag fuer Arbeitsgeraete inkl. Austauschservice.",
+        "description": "Leasingvertrag für Arbeitsgeräte inkl. Austauschservice.",
         "positions": [
             {
                 "name": "5x Business-Notebook",
@@ -298,7 +298,7 @@ CONTRACTS = [
         "partner_kind": "supplier",
         "partner_name": "TeleNord Connect GmbH",
         "contract_no": "E-2026-103",
-        "title": "Internet und Mobilfunk Buero",
+        "title": "Internet und Mobilfunk Büro",
         "contract_type": "cost",
         "status": "active",
         "start_date": date(2026, 4, 15),
@@ -338,7 +338,7 @@ CONTRACTS = [
         "cancellation_date": date(2026, 9, 30),
         "renewal_type": "automatic",
         "responsible": "Arne",
-        "description": "Jaehrliche Betriebshaftpflicht inkl. Vermoegensschaden-Zusatz.",
+        "description": "Jährliche Betriebshaftpflicht inkl. Vermögensschaden-Zusatz.",
         "positions": [
             {
                 "name": "Jahrespraemie Betriebshaftpflicht",
@@ -362,7 +362,7 @@ CONTRACTS = [
         "cancellation_date": date(2026, 3, 31),
         "renewal_type": "none",
         "responsible": "Claudia",
-        "description": "Gekuendigtes Alt-System als Beispiel fuer Status cancelled.",
+        "description": "Gekündigtes Alt-System als Beispiel für Status cancelled.",
         "positions": [
             {
                 "name": "Legacy VPS",
@@ -372,6 +372,126 @@ CONTRACTS = [
                 "account": "4900",
                 "cost_center_1": "IT",
             },
+        ],
+    },
+]
+
+
+EXTRA_CONTRACTS = [
+    {
+        "partner_kind": "customer",
+        "partner_name": "Musterstadtwerke GmbH",
+        "contract_no": "V-2026-010",
+        "title": "Energieportal Premium-Support",
+        "contract_type": "revenue",
+        "status": "active",
+        "start_date": date(2026, 7, 1),
+        "end_date": date(2027, 6, 30),
+        "cancellation_date": None,
+        "cancellation_period_value": 3,
+        "cancellation_period_unit": "months",
+        "renewal_type": "automatic",
+        "responsible": "Arne",
+        "description": "Demo-Vertrag mit dreimonatiger Kündigungsfrist und automatischer Verlängerung.",
+        "positions": [
+            {"name": "Premium-Support", "amount": "1850.00", "recurrence": "monthly", "billing_day": 1, "account": "8400", "cost_center_1": "Support"},
+            {"name": "Quartals-Review", "amount": "1200.00", "recurrence": "quarterly", "billing_day": 15, "account": "8400", "cost_center_1": "Review"},
+        ],
+    },
+    {
+        "partner_kind": "customer",
+        "partner_name": "Nordlicht Pflege AG",
+        "contract_no": "V-2026-011",
+        "title": "Datenschutz-Audit Pflegeverbund",
+        "contract_type": "revenue",
+        "status": "active",
+        "start_date": date(2026, 5, 1),
+        "end_date": date(2026, 10, 31),
+        "cancellation_date": None,
+        "cancellation_period_value": 6,
+        "cancellation_period_unit": "weeks",
+        "renewal_type": "manual",
+        "responsible": "Claudia",
+        "description": "Zeitlich begrenzter Audit-Vertrag mit sechswöchiger Kündigungsfrist.",
+        "positions": [
+            {"name": "Audit-Pauschale", "amount": "5400.00", "recurrence": "once", "billing_day": 1, "account": "8400", "cost_center_1": "Audit"},
+        ],
+    },
+    {
+        "partner_kind": "customer",
+        "partner_name": "Baltic Events UG",
+        "contract_no": "V-2026-012",
+        "title": "Ticketing-Schnittstelle Festival",
+        "contract_type": "revenue",
+        "status": "forecast",
+        "start_date": date(2026, 9, 1),
+        "end_date": date(2027, 8, 31),
+        "cancellation_date": None,
+        "cancellation_period_value": 30,
+        "cancellation_period_unit": "days",
+        "renewal_type": "automatic",
+        "responsible": "Arne",
+        "description": "Forecast-Beispiel mit 30 Tagen Kündigungsfrist.",
+        "positions": [
+            {"name": "Schnittstellenbetrieb", "amount": "990.00", "recurrence": "monthly", "billing_day": 1, "account": "8400", "cost_center_1": "Integration"},
+            {"name": "Einrichtung und Test", "amount": "3200.00", "recurrence": "once", "billing_day": 5, "account": "8400", "cost_center_1": "Projekt"},
+        ],
+    },
+    {
+        "partner_kind": "supplier",
+        "partner_name": "CloudWerk Hosting GmbH",
+        "contract_no": "E-2026-110",
+        "title": "Monitoring Plus Paket",
+        "contract_type": "cost",
+        "status": "active",
+        "start_date": date(2026, 6, 1),
+        "end_date": date(2027, 5, 31),
+        "cancellation_date": None,
+        "cancellation_period_value": 60,
+        "cancellation_period_unit": "days",
+        "renewal_type": "automatic",
+        "responsible": "Claudia",
+        "description": "Lieferantenvertrag mit 60 Tagen Kündigungsfrist.",
+        "positions": [
+            {"name": "Monitoring Plus", "amount": "149.00", "recurrence": "monthly", "billing_day": 1, "account": "4900", "cost_center_1": "IT"},
+        ],
+    },
+    {
+        "partner_kind": "supplier",
+        "partner_name": "TeleNord Connect GmbH",
+        "contract_no": "E-2026-111",
+        "title": "Mobilfunk Außendienst",
+        "contract_type": "cost",
+        "status": "active",
+        "start_date": date(2026, 8, 1),
+        "end_date": date(2028, 7, 31),
+        "cancellation_date": None,
+        "cancellation_period_value": 3,
+        "cancellation_period_unit": "months",
+        "renewal_type": "automatic",
+        "responsible": "Arne",
+        "description": "Mobilfunkvertrag mit klassischer dreimonatiger Kündigungsfrist.",
+        "positions": [
+            {"name": "5x Mobilfunk Allnet", "amount": "124.50", "recurrence": "monthly", "billing_day": 1, "account": "4920", "cost_center_1": "Kommunikation"},
+        ],
+    },
+    {
+        "partner_kind": "supplier",
+        "partner_name": "Versicherungskontor Hansen",
+        "contract_no": "E-2026-112",
+        "title": "Cyberversicherung",
+        "contract_type": "cost",
+        "status": "active",
+        "start_date": date(2026, 1, 1),
+        "end_date": date(2026, 12, 31),
+        "cancellation_date": None,
+        "cancellation_period_value": 3,
+        "cancellation_period_unit": "months",
+        "renewal_type": "automatic",
+        "responsible": "Claudia",
+        "description": "Jährlicher Versicherungsvertrag, gut zum Testen der 90-Tage-Kündigungsansicht.",
+        "positions": [
+            {"name": "Jahresprämie Cyberversicherung", "amount": "980.00", "recurrence": "yearly", "billing_day": 1, "account": "4360", "cost_center_1": "Versicherung"},
         ],
     },
 ]
@@ -437,11 +557,23 @@ def seed_contract(contract_data, customers_by_name, suppliers_by_name):
         "start_date",
         "end_date",
         "cancellation_date",
+        "cancellation_period_value",
+        "cancellation_period_unit",
         "renewal_type",
         "responsible",
         "description",
     ):
-        setattr(contract, key, contract_data[key])
+        setattr(contract, key, contract_data.get(key))
+
+    safe_contract_no = contract_data["contract_no"].lower().replace("-", "")
+    contract.contract_link = contract_data.get(
+        "contract_link",
+        f"https://example.com/demo/verträge/{safe_contract_no}",
+    )
+    contract.invoice_link = contract_data.get(
+        "invoice_link",
+        f"https://example.com/demo/rechnungen/{safe_contract_no}",
+    )
 
     # Keep reruns deterministic: replace only demo positions for this demo contract.
     contract.positions.clear()
@@ -465,7 +597,7 @@ def main():
             for data in SUPPLIERS
         }
 
-        for contract_data in CONTRACTS:
+        for contract_data in CONTRACTS + EXTRA_CONTRACTS:
             seed_contract(contract_data, customers_by_name, suppliers_by_name)
 
         db.session.commit()
@@ -473,7 +605,7 @@ def main():
         print("Beispieldaten eingespielt:")
         print(f"- Kunden: {Customer.query.count()}")
         print(f"- Lieferanten: {Supplier.query.count()}")
-        print(f"- Vertraege: {Contract.query.count()}")
+        print(f"- Verträge: {Contract.query.count()}")
         print(f"- Positionen: {ContractPosition.query.count()}")
         print(f"- Positionsversionen: {ContractPositionVersion.query.count()}")
 
