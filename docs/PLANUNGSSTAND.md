@@ -1,6 +1,6 @@
 # Planungsstand Vertragsplanung-App
 
-Stand: 2026-06-13
+Stand: 2026-07-21
 
 ## Ziel
 
@@ -28,6 +28,7 @@ PostgreSQL bleibt als spätere Produktivoption vorgesehen.
 - Kundenstamm inklusive Nummer, Status, Kontakt, E-Mail, Adresse und Notizen
 - Lieferantenstamm inklusive Nummer, Status, Kontakt, E-Mail, Adresse und Notizen
 - Vertragsliste mit Suche, Statusfilter, Vertragstypfilter, Partnerfilter und Sortierung
+- Vertragsliste mit Kündigungsfilter für jetzt bzw. innerhalb von 30/60/90 Tagen kündbare Verträge
 - Positionsliste mit Suche, Statusfilter, Positionstypfilter, Partnerfilter und Sortierung
 - Vertragsanlage/-bearbeitung mit Partnerauswahl Kunde oder Lieferant
 - Vertragsdetail mit Positionen und Versionen
@@ -62,15 +63,18 @@ PostgreSQL bleibt als spätere Produktivoption vorgesehen.
 | `cancelled` | berücksichtigen, solange der Planungsmonat innerhalb der wirksamen Laufzeit liegt |
 | `ended` | nicht berücksichtigen |
 
-## Laufzeit, Kuendigung und Verlaengerung
+## Laufzeit, Kündigung und Verlängerung
 
-- `start_date` ist der Beginn der Planung. Vor diesem Datum wird der Vertrag nicht beruecksichtigt.
+- `start_date` ist der Beginn der Planung. Vor diesem Datum wird der Vertrag nicht berücksichtigt.
 - `end_date` ist das Vertragsende bzw. der letzte Leistungszeitraum der gepflegten Laufzeit.
-- `cancellation_date` bedeutet "gekuendigt zum" und ist das wirksame Ende. Wenn dieses Datum gesetzt ist, endet die Planung danach auch bei automatischer Verlaengerung.
-- `renewal_type = none`: keine Verlaengerung; die Planung endet nach `end_date`.
-- `renewal_type = manual`: manuelle Verlaengerung; die Planung endet nach `end_date`, ausser die Laufzeit wird aktiv fortgeschrieben.
-- `renewal_type = automatic`: automatische Verlaengerung; ohne `cancellation_date` laeuft der Vertrag in der Planung ueber `end_date` hinaus weiter.
-- `status = cancelled` ist damit ein fachlicher Status fuer gekuendigte Vertraege; geplant wird trotzdem bis zum wirksamen Ende.
+- `cancellation_date` bedeutet "gekündigt zum" und ist das wirksame Ende. Wenn dieses Datum gesetzt ist, endet die Planung danach auch bei automatischer Verlängerung.
+- `cancellation_period_value` und `cancellation_period_unit` speichern die Kündigungsfrist, z. B. `3 months`, `6 weeks` oder `30 days`.
+- Der berechnete Stichtag "Kündbar bis" ergibt sich aus `end_date` minus Kündigungsfrist. Er wird in Detail- und Listenansicht angezeigt.
+- Die Vertragsliste kann nach jetzt, innerhalb von 30 Tagen, innerhalb von 60 Tagen oder innerhalb von 90 Tagen kündbaren Verträgen gefiltert werden.
+- `renewal_type = none`: keine Verlängerung; die Planung endet nach `end_date`.
+- `renewal_type = manual`: manuelle Verlängerung; die Planung endet nach `end_date`, außer die Laufzeit wird aktiv fortgeschrieben.
+- `renewal_type = automatic`: automatische Verlängerung; ohne `cancellation_date` läuft der Vertrag in der Planung über `end_date` hinaus weiter.
+- `status = cancelled` ist damit ein fachlicher Status für gekündigte Verträge; geplant wird trotzdem bis zum wirksamen Ende.
 - `status = ended` beendet die Beruecksichtigung immer sofort.
 
 ## Datenmodell
@@ -111,6 +115,8 @@ PostgreSQL bleibt als spätere Produktivoption vorgesehen.
 - Startdatum
 - Enddatum
 - Kündigungsdatum
+- Kündigungsfrist: Wert und Einheit (`days` / `weeks` / `months`)
+- Berechneter Kündigungsstichtag "Kündbar bis"
 - Verlängerungstyp
 - Verantwortlicher
 - Beschreibung
@@ -195,6 +201,8 @@ Optionale Spalten:
 - `position_type`
 - `contract_start`
 - `contract_end`
+- `contract_link`
+- `invoice_link`
 - `currency`
 
 Hinweis: Für Lieferantenverträge wird `partner_type=supplier` erwartet. Ohne Angabe wird `customer` angenommen.
@@ -209,7 +217,6 @@ Export der erzeugten Planungszeilen als:
 ## Offene Punkte und nächste Schritte
 
 - Importvorlage um Lieferanten-/Partnerfelder erweitern
-- UI-Texte und Fehlermeldungen vollständig auf Umlaute/UTF-8 prüfen
 - Automatisierte Tests für Planungslogik, Import und Routen ergänzen
 - Echte Alembic-Migrationen statt manueller Aktualisierung in `create_db.py` aufbauen
 - Lösch-/Archivierungslogik für Stammdaten und Verträge klären

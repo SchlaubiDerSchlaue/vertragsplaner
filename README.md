@@ -1,20 +1,21 @@
 # Vertragsplanung MVP
 
-Flask-Web-App zur Verwaltung von Kunden- und Lieferantenvertraegen. Aus Vertragspositionen mit zeitgueltigen Versionen werden monatliche Planungsdaten fuer Erloese und Kosten erzeugt und als CSV oder Excel exportiert.
+Flask-Web-App zur Verwaltung von Kunden- und Lieferantenverträgen. Aus Vertragspositionen mit zeitgültigen Versionen werden monatliche Planungsdaten für Erlöse und Kosten erzeugt und als CSV oder Excel exportiert.
 
 ## Aktueller Funktionsumfang
 
-- Dashboard mit Kennzahlen zu Kunden, Lieferanten, Vertraegen, Positionen und Forecast-Vertraegen
+- Dashboard mit Kennzahlen zu Kunden, Lieferanten, Verträgen, Positionen und Forecast-Verträgen
 - Kunden- und Lieferantenverwaltung inklusive Kontaktdaten und Adresse
-- Vertragsverwaltung fuer Erloes- und Kostenvertraege
+- Vertragsverwaltung für Erlös- und Kostenverträge
 - Zuordnung eines Vertrags zu genau einem Kunden oder einem Lieferanten
+- Vertragslaufzeit mit Kündigungsfrist, berechnetem Kündigungsstichtag und Filter für bald kündbare Verträge
 - Vertragspositionen mit Typ `revenue` oder `cost`
-- Fortschreibung von Positionsversionen mit automatischem Schliessen vorheriger Versionen
-- Monatliche Planungsrechnung mit Zeitraum, Erloes-/Kostenfilter und Forecast-Option
+- Fortschreibung von Positionsversionen mit automatischem Schließen vorheriger Versionen
+- Monatliche Planungsrechnung mit Zeitraum, Erlös-/Kostenfilter und Forecast-Option
 - Planungsexport als Excel oder CSV
 - CSV-/Excel-Import von Vertragspositionsversionen
 - Listenansichten mit Suche, Filtern und Sortierung
-- Bootstrap-basierte Server-Side-Rendered-Weboberflaeche
+- Bootstrap-basierte Server-Side-Rendered-Weboberfläche
 
 ## Technische Basis
 
@@ -23,7 +24,7 @@ Flask-Web-App zur Verwaltung von Kunden- und Lieferantenvertraegen. Aus Vertrags
 - Flask-SQLAlchemy
 - Flask-Migrate
 - SQLite als Standarddatenbank
-- Pandas und OpenPyXL fuer Import und Export
+- Pandas und OpenPyXL für Import und Export
 
 ## Installation
 
@@ -37,20 +38,20 @@ python create_db.py
 python run.py
 ```
 
-Optional fuer lokale Entwicklung und Tests:
+Optional für lokale Entwicklung und Tests:
 
 ```bash
 pip install -r requirements-dev.txt
 pytest
 ```
 
-Die App laeuft danach unter:
+Die App läuft danach unter:
 
 ```text
 http://127.0.0.1:5000
 ```
 
-Die Datenbank liegt standardmaessig als SQLite-Datei `contract_planning.db` im Flask-Instance-Verzeichnis. Ueber die Umgebungsvariable `DATABASE_URL` kann eine andere Datenbank-URL gesetzt werden.
+Die Datenbank liegt standardmäßig als SQLite-Datei `contract_planning.db` im Flask-Instance-Verzeichnis. Über die Umgebungsvariable `DATABASE_URL` kann eine andere Datenbank-URL gesetzt werden.
 
 ## Importformat
 
@@ -82,26 +83,28 @@ Optionale Spalten:
 - `contract_end`
 - `currency`
 
-Fuer Lieferantenvertraege wird `partner_type=supplier` verwendet. Falls `supplier_name` leer ist, nutzt der Import ersatzweise `customer_name` als Partnername.
+Für Lieferantenverträge wird `partner_type=supplier` verwendet. Falls `supplier_name` leer ist, nutzt der Import ersatzweise `customer_name` als Partnername.
 
 ## Planung und Export
 
-Die Planung erzeugt je Monat eine Zeile pro aktiver, gueltiger Position. Unterstuetzte Rhythmen sind:
+Die Planung erzeugt je Monat eine Zeile pro aktiver, gültiger Position. Unterstützte Rhythmen sind:
 
 - `monthly`
 - `quarterly`
 - `yearly`
 - `once`
 
-Kostenpositionen werden in der Planung und im Export als negative Betraege ausgegeben. Vertraege mit Status `forecast` werden nur beruecksichtigt, wenn die Forecast-Option aktiv ist.
+Kostenpositionen werden in der Planung und im Export als negative Beträge ausgegeben. Verträge mit Status `forecast` werden nur berücksichtigt, wenn die Forecast-Option aktiv ist.
+
+Verträge können zusätzlich eine Kündigungsfrist in Tagen, Wochen oder Monaten speichern. Aus Vertragsende und Kündigungsfrist berechnet die App den Stichtag „Kündbar bis“ und bietet in der Vertragsliste Filter für jetzt bzw. innerhalb von 30, 60 oder 90 Tagen kündbare Verträge.
 
 ## Zugriff und Rollen
 
-Die Weboberflaeche ist zugriffsgeschuetzt. Es gibt drei Rollen:
+Die Weboberfläche ist zugriffsgeschützt. Es gibt drei Rollen:
 
 - `read`: Daten ansehen, Planung berechnen und Exporte herunterladen
-- `write`: zusaetzlich Kunden, Lieferanten, Vertraege, Positionen, Versionen und Importe bearbeiten
-- `admin`: zusaetzlich Benutzer und API-Tokens verwalten
+- `write`: zusätzlich Kunden, Lieferanten, Verträge, Positionen, Versionen und Importe bearbeiten
+- `admin`: zusätzlich Benutzer und API-Tokens verwalten
 
 Nach dem Erzeugen oder Aktualisieren der Datenbank muss mindestens ein Admin-Benutzer angelegt werden:
 
@@ -121,11 +124,11 @@ python create_admin.py --username admin
 python run.py
 ```
 
-Admins koennen in der Weboberflaeche unter `Admin` weitere Benutzer und API-Tokens anlegen.
+Admins können in der Weboberfläche unter `Admin` weitere Benutzer und API-Tokens anlegen.
 
-## JSON-API fuer KI-Agenten und Skripte
+## JSON-API für KI-Agenten und Skripte
 
-Die App stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist fuer lokale oder interne Agenten und Automatisierungen gedacht. Schreibzugriffe, Importe und Loeschungen sind ueber diese API nicht moeglich.
+Die App stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist für lokale oder interne Agenten und Automatisierungen gedacht. Schreibzugriffe, Importe und Löschungen sind über diese API nicht möglich.
 
 Kurztest mit API-Token:
 
@@ -136,11 +139,11 @@ export VERTRAGSPLANER_API_TOKEN="dein-token"
 curl -H "Authorization: Bearer $VERTRAGSPLANER_API_TOKEN" "$VERTRAGSPLANER_BASE_URL/health"
 ```
 
-Ausfuehrliche Dokumentation inklusive Endpunkten, Filtern, Antwortformaten und Sicherheitsnotizen steht in [`docs/API.md`](docs/API.md).
+Ausführliche Dokumentation inklusive Endpunkten, Filtern, Antwortformaten und Sicherheitsnotizen steht in [`docs/API.md`](docs/API.md).
 
-Lauffaehige Beispiele liegen unter [`examples/`](examples/):
+Lauffähige Beispiele liegen unter [`examples/`](examples/):
 
-- [`examples/curl-api.sh`](examples/curl-api.sh) - Healthcheck, Vertraege und Planung per curl abrufen
+- [`examples/curl-api.sh`](examples/curl-api.sh) - Healthcheck, Verträge und Planung per curl abrufen
 - [`examples/python-api.py`](examples/python-api.py) - kleiner Python-Client mit Planungssumme nach Monat
 
 Beispiel:
@@ -151,4 +154,4 @@ export VERTRAGSPLANER_API_TOKEN="dein-token"
 python examples/python-api.py
 ```
 
-Fuer LAN-Zugriff kann die Flask-App auf einer LAN-Adresse gebunden werden, z. B. mit `flask run --host=0.0.0.0`. Die API sollte nicht ohne HTTPS, Reverse Proxy und staerkere Absicherung direkt im Internet veroeffentlicht werden.
+Für LAN-Zugriff kann die Flask-App auf einer LAN-Adresse gebunden werden, z. B. mit `flask run --host=0.0.0.0`. Die API sollte nicht ohne HTTPS, Reverse Proxy und stärkere Absicherung direkt im Internet veröffentlicht werden.

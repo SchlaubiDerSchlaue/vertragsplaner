@@ -1,8 +1,8 @@
 # JSON-API
 
-Die Anwendung stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist fuer lokale Skripte, interne Automatisierungen und KI-Agenten gedacht, die Vertrags-, Positions- und Planungsdaten auslesen sollen.
+Die Anwendung stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist für lokale Skripte, interne Automatisierungen und KI-Agenten gedacht, die Vertrags-, Positions- und Planungsdaten auslesen sollen.
 
-> Wichtig: Die API erlaubt aktuell keine Schreibzugriffe, Importe oder Loeschungen.
+> Wichtig: Die API erlaubt aktuell keine Schreibzugriffe, Importe oder Löschungen.
 
 ## Basis-URL
 
@@ -26,9 +26,9 @@ Jeder Request braucht einen API-Token als Bearer-Token:
 Authorization: Bearer <API_TOKEN>
 ```
 
-API-Tokens werden in der Weboberflaeche unter `Admin -> API-Tokens` angelegt. Fuer die read-only API reicht die Rolle `read`; `write` und `admin` funktionieren ebenfalls, haben ueber die JSON-API aber keine zusaetzlichen Schreibrechte.
+API-Tokens werden in der Weboberfläche unter `Admin -> API-Tokens` angelegt. Für die read-only API reicht die Rolle `read`; `write` und `admin` funktionieren ebenfalls, haben über die JSON-API aber keine zusätzlichen Schreibrechte.
 
-Empfehlung fuer Beispiele und Skripte:
+Empfehlung für Beispiele und Skripte:
 
 ```bash
 export VERTRAGSPLANER_BASE_URL="http://127.0.0.1:5000/api/v1"
@@ -74,12 +74,12 @@ Fehler liefern `error`:
 
 ## Pagination
 
-Listen-Endpunkte unterstuetzen:
+Listen-Endpunkte unterstützen:
 
 | Parameter | Standard | Maximum | Beschreibung |
 | --- | ---: | ---: | --- |
-| `limit` | `100` | `500` | Maximale Anzahl Eintraege |
-| `offset` | `0` | - | Anzahl zu ueberspringender Eintraege |
+| `limit` | `100` | `500` | Maximale Anzahl Einträge |
+| `offset` | `0` | - | Anzahl zu überspringender Einträge |
 
 Beispiel:
 
@@ -142,14 +142,14 @@ Filter:
 | `status` | Exakter Lieferantenstatus |
 | `limit`, `offset` | Pagination |
 
-### Vertraege
+### Verträge
 
 ```http
 GET /contracts
 GET /contracts/<id>
 ```
 
-Filter fuer die Liste:
+Filter für die Liste:
 
 | Parameter | Beschreibung |
 | --- | --- |
@@ -159,7 +159,20 @@ Filter fuer die Liste:
 | `partner_type` | `customer` oder `supplier` |
 | `limit`, `offset` | Pagination |
 
-Beispiel aktive Erloesvertraege:
+Antwortfelder für Laufzeit und Kündigung:
+
+| Feld | Beschreibung |
+| --- | --- |
+| `start_date` | Vertragsbeginn |
+| `end_date` | Vertragsende bzw. letzter Leistungszeitraum |
+| `cancellation_date` | Wirksames Kündigungsende, wenn bereits gekündigt |
+| `cancellation_period_value` | Zahlenwert der Kündigungsfrist |
+| `cancellation_period_unit` | Einheit der Kündigungsfrist: `days`, `weeks` oder `months` |
+| `cancellation_period_label` | Lesbare Darstellung, z. B. `3 Monate` |
+| `cancellation_deadline` | Berechneter Stichtag „Kündbar bis“ |
+| `renewal_type` | `none`, `manual` oder `automatic` |
+
+Beispiel aktive Erlösverträge:
 
 ```bash
 curl -sS \
@@ -188,7 +201,7 @@ Filter:
 | `q` | Suche in Positionsname, Vertragstitel und Partnername |
 | `status` | Exakter Positionsstatus |
 | `position_type` | `revenue` oder `cost` |
-| `contract_type` | Alias fuer `position_type` |
+| `contract_type` | Alias für `position_type` |
 | `partner_type` | `customer` oder `supplier` |
 | `limit`, `offset` | Pagination |
 
@@ -217,13 +230,13 @@ Optionale Parameter:
 
 | Parameter | Standard | Beschreibung |
 | --- | --- | --- |
-| `include_revenue` | `true` | Erloespositionen einschliessen |
-| `include_cost` | `false` | Kostenpositionen einschliessen |
-| `include_forecast` | `false` | Forecast-Vertraege einschliessen |
+| `include_revenue` | `true` | Erlöspositionen einschließen |
+| `include_cost` | `false` | Kostenpositionen einschließen |
+| `include_forecast` | `false` | Forecast-Verträge einschließen |
 
-Boolesche Werte koennen als `true`, `false`, `1`, `0`, `yes`, `on` oder `ja` uebergeben werden. Alles ausser den wahr-Werten wird als falsch behandelt.
+Boolesche Werte können als `true`, `false`, `1`, `0`, `yes`, `on` oder `ja` übergeben werden. Alles außer den wahr-Werten wird als falsch behandelt.
 
-Beispiel Jahresplanung fuer Erloese und Kosten ohne Forecast:
+Beispiel Jahresplanung für Erlöse und Kosten ohne Forecast:
 
 ```bash
 curl -sS \
@@ -233,7 +246,7 @@ curl -sS \
 
 ## Schnellstart mit jq
 
-Alle aktiven Vertraege als Kurzliste:
+Alle aktiven Verträge als Kurzliste:
 
 ```bash
 curl -sS \
@@ -254,15 +267,15 @@ curl -sS \
 
 ## Beispielskripte
 
-Im Repository liegen lauffaehige Beispiele unter `examples/`:
+Im Repository liegen lauffähige Beispiele unter `examples/`:
 
-- `examples/curl-api.sh` - ruft Healthcheck, Vertraege und Planung per curl ab
+- `examples/curl-api.sh` - ruft Healthcheck, Verträge und Planung per curl ab
 - `examples/python-api.py` - kleiner Python-Client mit Summierung der Planung nach Monat
 
 Beide Beispiele lesen `VERTRAGSPLANER_BASE_URL` und `VERTRAGSPLANER_API_TOKEN` aus der Umgebung.
 
 ## Sicherheitshinweise
 
-- API-Tokens wie Passwoerter behandeln und nicht commiten.
-- Die aktuelle API ist fuer interne Nutzung gedacht. Fuer oeffentliche Bereitstellung sollte sie hinter HTTPS, Reverse Proxy, Rate-Limit und sauberem Secret-Management laufen.
-- Bei direktem Flask-Development-Server im Internet koennen Scanner viele 404/400-Requests erzeugen; produktiv besser Gunicorn/systemd plus Reverse Proxy verwenden.
+- API-Tokens wie Passwörter behandeln und nicht commiten.
+- Die aktuelle API ist für interne Nutzung gedacht. Für öffentliche Bereitstellung sollte sie hinter HTTPS, Reverse Proxy, Rate-Limit und sauberem Secret-Management laufen.
+- Bei direktem Flask-Development-Server im Internet können Scanner viele 404/400-Requests erzeugen; produktiv besser Gunicorn/systemd plus Reverse Proxy verwenden.
