@@ -51,18 +51,18 @@ def edit_user(user_id):
 def delete_user(user_id):
     user = User.query.get_or_404(user_id)
     if g.current_user and user.id == g.current_user.id:
-        flash("Das eigene Benutzerkonto kann nicht geloescht werden.", "danger")
+        flash("Das eigene Benutzerkonto kann nicht gelöscht werden.", "danger")
         return redirect(url_for("admin.index"))
 
     if user.role == "admin" and user.is_active:
         active_admin_count = User.query.filter_by(role="admin", is_active=True).count()
         if active_admin_count <= 1:
-            flash("Der letzte aktive Admin kann nicht geloescht werden.", "danger")
+            flash("Der letzte aktive Admin kann nicht gelöscht werden.", "danger")
             return redirect(url_for("admin.index"))
 
     db.session.delete(user)
     db.session.commit()
-    flash("Benutzer wurde geloescht.", "success")
+    flash("Benutzer wurde gelöscht.", "success")
     return redirect(url_for("admin.index"))
 
 
@@ -107,7 +107,7 @@ def delete_token(token_id):
     token = ApiToken.query.get_or_404(token_id)
     db.session.delete(token)
     db.session.commit()
-    flash("API-Token wurde geloescht.", "success")
+    flash("API-Token wurde gelöscht.", "success")
     return redirect(url_for("admin.index"))
 
 

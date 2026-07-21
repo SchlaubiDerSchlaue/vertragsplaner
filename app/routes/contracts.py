@@ -372,15 +372,15 @@ def save_contract_from_form(contract):
     contract.description = request.form.get("description", "").strip() or None
 
     if contract.customer_id and contract.supplier_id:
-        errors.append("Bitte entweder Kunde oder Lieferant auswaehlen, nicht beides.")
+        errors.append("Bitte entweder Kunde oder Lieferant auswählen, nicht beides.")
     elif contract.customer_id:
         if not Customer.query.get(contract.customer_id):
-            errors.append("Bitte einen gueltigen Kunden auswaehlen.")
+            errors.append("Bitte einen gültigen Kunden auswählen.")
     elif contract.supplier_id:
         if not Supplier.query.get(contract.supplier_id):
-            errors.append("Bitte einen gueltigen Lieferanten auswaehlen.")
+            errors.append("Bitte einen gültigen Lieferanten auswählen.")
     else:
-        errors.append("Bitte Kunde oder Lieferant auswaehlen.")
+        errors.append("Bitte Kunde oder Lieferant auswählen.")
     if not contract.title:
         errors.append("Bitte einen Vertragstitel eingeben.")
     if not contract.start_date:
@@ -388,19 +388,19 @@ def save_contract_from_form(contract):
     if contract.start_date and contract.end_date and contract.end_date < contract.start_date:
         errors.append("Das Enddatum darf nicht vor dem Startdatum liegen.")
     if contract.start_date and contract.cancellation_date and contract.cancellation_date < contract.start_date:
-        errors.append("Das Kuendigungsdatum darf nicht vor dem Startdatum liegen.")
+        errors.append("Das Kündigungsdatum darf nicht vor dem Startdatum liegen.")
     if contract.cancellation_period_value is None:
         contract.cancellation_period_unit = None
     elif contract.cancellation_period_value < 0:
-        errors.append("Die Kuendigungsfrist darf nicht negativ sein.")
+        errors.append("Die Kündigungsfrist darf nicht negativ sein.")
     elif contract.cancellation_period_unit not in {"days", "weeks", "months"}:
-        errors.append("Bitte eine gueltige Einheit fuer die Kuendigungsfrist auswaehlen.")
+        errors.append("Bitte eine gültige Einheit für die Kündigungsfrist auswählen.")
     if contract.renewal_type not in {"none", "manual", "automatic"}:
-        errors.append("Bitte einen gueltigen Verlaengerungstyp auswaehlen.")
+        errors.append("Bitte einen gültigen Verlängerungstyp auswählen.")
     if not is_valid_url(contract.contract_link):
-        errors.append("Bitte einen gueltigen Link zum Vertrag eingeben.")
+        errors.append("Bitte einen gültigen Link zum Vertrag eingeben.")
     if not is_valid_url(contract.invoice_link):
-        errors.append("Bitte einen gueltigen Link zu Rechnungen eingeben.")
+        errors.append("Bitte einen gültigen Link zu Rechnungen eingeben.")
 
     return errors
 
@@ -434,11 +434,11 @@ def save_version_from_form(version, allow_valid_to=False):
     version.note = request.form.get("note", "").strip() or None
 
     if not version.valid_from:
-        errors.append("Bitte ein Gueltig-ab-Datum eingeben.")
+        errors.append("Bitte ein Gültig-ab-Datum eingeben.")
     if version.amount is None:
-        errors.append("Bitte einen gueltigen Betrag eingeben.")
+        errors.append("Bitte einen gültigen Betrag eingeben.")
     if version.valid_from and version.valid_to and version.valid_to < version.valid_from:
-        errors.append("Gueltig bis darf nicht vor Gueltig ab liegen.")
+        errors.append("Gültig bis darf nicht vor Gültig ab liegen.")
     if version.billing_day is not None and not 1 <= version.billing_day <= 31:
         errors.append("Der Abrechnungstag muss zwischen 1 und 31 liegen.")
     if not allow_valid_to and version.valid_from:
@@ -448,7 +448,7 @@ def save_version_from_form(version, allow_valid_to=False):
             valid_from=version.valid_from,
         ).first()
         if existing:
-            errors.append("Es gibt bereits eine Version mit diesem Gueltig-ab-Datum.")
+            errors.append("Es gibt bereits eine Version mit diesem Gültig-ab-Datum.")
 
     return errors
 

@@ -13,12 +13,12 @@
 <form method="post" class="mt-3">
     <div class="row g-3">
         <div class="col-md-3">
-            <label class="form-label" for="valid_from">Gueltig ab *</label>
+            <label class="form-label" for="valid_from">Gültig ab *</label>
             <input class="form-control" id="valid_from" name="valid_from" type="date" value="{{ version.valid_from or '' }}" required>
         </div>
         {% if mode == "edit" %}
         <div class="col-md-3">
-            <label class="form-label" for="valid_to">Gueltig bis</label>
+            <label class="form-label" for="valid_to">Gültig bis</label>
             <input class="form-control" id="valid_to" name="valid_to" type="date" value="{{ version.valid_to or '' }}">
         </div>
         {% endif %}
@@ -27,7 +27,7 @@
             <input class="form-control" id="amount" name="amount" inputmode="decimal" value="{{ version.amount or '' }}" required>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="currency">Waehrung</label>
+            <label class="form-label" for="currency">Währung</label>
             <input class="form-control" id="currency" name="currency" maxlength="3" value="{{ version.currency or 'EUR' }}">
         </div>
         <div class="col-md-3">

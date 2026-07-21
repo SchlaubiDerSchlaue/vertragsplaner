@@ -15,7 +15,7 @@
         <div class="col-md-3 partner-field" data-partner-field="customer">
             <label class="form-label" for="customer_id">Kunde *</label>
             <select class="form-select" id="customer_id" name="customer_id">
-                <option value="">Bitte waehlen</option>
+                <option value="">Bitte wählen</option>
                 {% for customer in customers %}
                 <option value="{{ customer.id }}" {% if contract.customer_id == customer.id %}selected{% endif %}>{{ customer.name }}</option>
                 {% endfor %}
@@ -24,7 +24,7 @@
         <div class="col-md-3 partner-field" data-partner-field="supplier">
             <label class="form-label" for="supplier_id">Lieferant *</label>
             <select class="form-select" id="supplier_id" name="supplier_id">
-                <option value="">Bitte waehlen</option>
+                <option value="">Bitte wählen</option>
                 {% for supplier in suppliers %}
                 <option value="{{ supplier.id }}" {% if contract.supplier_id == supplier.id %}selected{% endif %}>{{ supplier.name }}</option>
                 {% endfor %}
@@ -73,15 +73,15 @@
         <div class="col-md-3">
             <label class="form-label" for="end_date">Vertragsende / letzter Leistungsmonat</label>
             <input class="form-control" id="end_date" name="end_date" type="date" value="{{ contract.end_date or '' }}">
-            <div class="form-text">Bei manueller/keiner Verlaengerung endet die Planung nach diesem Datum.</div>
+            <div class="form-text">Bei manueller/keiner Verlängerung endet die Planung nach diesem Datum.</div>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="cancellation_date">Gekuendigt zum</label>
+            <label class="form-label" for="cancellation_date">Gekündigt zum</label>
             <input class="form-control" id="cancellation_date" name="cancellation_date" type="date" value="{{ contract.cancellation_date or '' }}">
-            <div class="form-text">Wenn gesetzt, endet die Planung nach diesem Datum auch bei automatischer Verlaengerung.</div>
+            <div class="form-text">Wenn gesetzt, endet die Planung nach diesem Datum auch bei automatischer Verlängerung.</div>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="cancellation_period_value">Kuendigungsfrist</label>
+            <label class="form-label" for="cancellation_period_value">Kündigungsfrist</label>
             <div class="input-group">
                 <input class="form-control" id="cancellation_period_value" name="cancellation_period_value" type="number" min="0" value="{{ contract.cancellation_period_value or '' }}">
                 <select class="form-select" id="cancellation_period_unit" name="cancellation_period_unit">
@@ -90,14 +90,14 @@
                     <option value="months" {% if not contract.cancellation_period_unit or contract.cancellation_period_unit == "months" %}selected{% endif %}>Monate</option>
                 </select>
             </div>
-            <div class="form-text">Ermittelt zusammen mit dem Vertragsende, bis wann gekuendigt werden muss.</div>
+            <div class="form-text">Ermittelt zusammen mit dem Vertragsende, bis wann gekündigt werden muss.</div>
         </div>
         <div class="col-md-3">
-            <label class="form-label" for="renewal_type">Verlaengerung</label>
+            <label class="form-label" for="renewal_type">Verlängerung</label>
             <select class="form-select" id="renewal_type" name="renewal_type">
                 <option value="none" {% if contract.renewal_type == "none" %}selected{% endif %}>keine - endet zum Vertragsende</option>
-                <option value="manual" {% if contract.renewal_type == "manual" %}selected{% endif %}>manuell - endet zum Vertragsende, ausser Laufzeit wird gepflegt</option>
-                <option value="automatic" {% if contract.renewal_type == "automatic" %}selected{% endif %}>automatisch - laeuft ohne Kuendigung weiter</option>
+                <option value="manual" {% if contract.renewal_type == "manual" %}selected{% endif %}>manuell - endet zum Vertragsende, außer Laufzeit wird gepflegt</option>
+                <option value="automatic" {% if contract.renewal_type == "automatic" %}selected{% endif %}>automatisch - läuft ohne Kündigung weiter</option>
             </select>
         </div>
         <div class="col-12">

@@ -27,7 +27,7 @@
     <input type="hidden" name="direction" value="{{ direction }}">
     <div class="col-md-auto">
         <button class="btn btn-outline-primary" type="submit">Filtern</button>
-        <a class="btn btn-outline-secondary" href="{{ url_for('suppliers.list_suppliers') }}">Zuruecksetzen</a>
+        <a class="btn btn-outline-secondary" href="{{ url_for('suppliers.list_suppliers') }}">Zurücksetzen</a>
     </div>
 </form>
 
@@ -38,7 +38,7 @@
         <th>{{ sort_link('suppliers.list_suppliers', 'Name', 'name', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('suppliers.list_suppliers', 'Status', 'status', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('suppliers.list_suppliers', 'E-Mail', 'email', sort, direction, sort_filters) }}</th>
-        <th>Vertraege</th>
+        <th>Verträge</th>
         <th></th>
     </tr>
     </thead>

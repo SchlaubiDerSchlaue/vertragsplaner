@@ -63,7 +63,7 @@ class AuthTestCase(unittest.TestCase):
 
         response = self.login("reader", "wrong")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"ungueltig", response.data)
+        self.assertIn("ungültig".encode(), response.data)
 
     def test_web_requires_login(self):
         response = self.client.get("/")

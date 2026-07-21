@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="mb-0">Vertraege</h1>
+    <h1 class="mb-0">Verträge</h1>
     {% if can_write() %}
     <a class="btn btn-primary" href="{{ url_for('contracts.new_contract') }}">Neuer Vertrag</a>
     {% endif %}
@@ -41,10 +41,10 @@
         </select>
     </div>
     <div class="col-md-2">
-        <label class="form-label" for="contract-cancellation-due">Kuendigung</label>
+        <label class="form-label" for="contract-cancellation-due">Kündigung</label>
         <select class="form-select" id="contract-cancellation-due" name="cancellation_due">
             <option value="">Alle</option>
-            <option value="now" {% if filters.cancellation_due == "now" %}selected{% endif %}>jetzt kuendbar</option>
+            <option value="now" {% if filters.cancellation_due == "now" %}selected{% endif %}>jetzt kündbar</option>
             <option value="30" {% if filters.cancellation_due == "30" %}selected{% endif %}>in 30 Tagen</option>
             <option value="60" {% if filters.cancellation_due == "60" %}selected{% endif %}>in 60 Tagen</option>
             <option value="90" {% if filters.cancellation_due == "90" %}selected{% endif %}>in 90 Tagen</option>
@@ -54,7 +54,7 @@
     <input type="hidden" name="direction" value="{{ direction }}">
     <div class="col-md-auto">
         <button class="btn btn-outline-primary" type="submit">Filtern</button>
-        <a class="btn btn-outline-secondary" href="{{ url_for('contracts.list_contracts') }}">Zuruecksetzen</a>
+        <a class="btn btn-outline-secondary" href="{{ url_for('contracts.list_contracts') }}">Zurücksetzen</a>
     </div>
 </form>
 
@@ -69,8 +69,8 @@
         <th>{{ sort_link('contracts.list_contracts', 'Status', 'status', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('contracts.list_contracts', 'Start', 'start_date', sort, direction, sort_filters) }}</th>
         <th>{{ sort_link('contracts.list_contracts', 'Ende', 'end_date', sort, direction, sort_filters) }}</th>
-        <th>Kuendigungsfrist</th>
-        <th>Kuendbar bis</th>
+        <th>Kündigungsfrist</th>
+        <th>Kündbar bis</th>
         <th>Vertrag</th>
         <th>Rechnungen</th>
         <th></th>
@@ -111,7 +111,7 @@
     </tr>
     {% else %}
     <tr>
-        <td colspan="13" class="text-muted">Noch keine Vertraege vorhanden.</td>
+        <td colspan="13" class="text-muted">Noch keine Verträge vorhanden.</td>
     </tr>
     {% endfor %}
     </tbody>

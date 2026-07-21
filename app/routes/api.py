@@ -25,7 +25,7 @@ def require_api_token():
     provided_token = auth_header[len(prefix):].strip()
     api_token = authenticate_api_token(provided_token)
     if api_token is None:
-        return error_response("unauthorized", "Ungueltiger API-Token.", 401)
+        return error_response("unauthorized", "Ungültiger API-Token.", 401)
     if not role_allows(api_token.role, "read"):
         return error_response("forbidden", "Der API-Token hat nicht die erforderliche Rolle.", 403)
 
@@ -127,7 +127,7 @@ def parse_date_arg(name):
     except ValueError:
         return None, error_response(
             "invalid_parameter",
-            f"{name} muss im Format YYYY-MM-DD uebergeben werden.",
+            f"{name} muss im Format YYYY-MM-DD übergeben werden.",
             400,
         )
 

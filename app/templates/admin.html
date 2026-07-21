@@ -24,7 +24,7 @@
             <div class="d-inline-flex gap-2">
                 <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.edit_user', user_id=user.id) }}">Bearbeiten</a>
                 <form method="post" action="{{ url_for('admin.delete_user', user_id=user.id) }}">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Benutzer wirklich loeschen?')">Loeschen</button>
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('Benutzer wirklich löschen?')">Löschen</button>
                 </form>
             </div>
         </td>
@@ -51,7 +51,7 @@
             <div class="d-inline-flex gap-2">
                 <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('admin.edit_token', token_id=token.id) }}">Bearbeiten</a>
                 <form method="post" action="{{ url_for('admin.delete_token', token_id=token.id) }}">
-                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('API-Token wirklich loeschen?')">Loeschen</button>
+                    <button class="btn btn-sm btn-outline-danger" type="submit" onclick="return confirm('API-Token wirklich löschen?')">Löschen</button>
                 </form>
             </div>
         </td>

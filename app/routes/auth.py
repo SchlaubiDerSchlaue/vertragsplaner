@@ -20,7 +20,7 @@ def login():
                 next_url = url_for("dashboard.dashboard")
             return redirect(next_url)
 
-        flash("Benutzername oder Passwort ist ungueltig.", "danger")
+        flash("Benutzername oder Passwort ist ungültig.", "danger")
 
     return render_template("login.html")
 

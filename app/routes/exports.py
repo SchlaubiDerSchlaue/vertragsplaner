@@ -45,7 +45,7 @@ def export_view():
         except (KeyError, ValueError):
             start_date = None
             end_date = None
-            error = "Bitte einen gueltigen Zeitraum eingeben."
+            error = "Bitte einen gültigen Zeitraum eingeben."
 
         if start_date and end_date and end_date < start_date:
             error = "Das Bis-Datum darf nicht vor dem Von-Datum liegen."

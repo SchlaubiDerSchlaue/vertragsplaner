@@ -6,7 +6,7 @@
     {% if can_write() %}
     <div class="d-flex gap-2">
         <a class="btn btn-outline-secondary" href="{{ url_for('contracts.edit_contract', contract_id=contract.id) }}">Vertrag bearbeiten</a>
-        <a class="btn btn-primary" href="{{ url_for('contracts.new_position', contract_id=contract.id) }}">Position hinzufuegen</a>
+        <a class="btn btn-primary" href="{{ url_for('contracts.new_position', contract_id=contract.id) }}">Position hinzufügen</a>
     </div>
     {% endif %}
 </div>
@@ -17,20 +17,20 @@
     <p><strong>Status:</strong> {{ contract.status }}</p>
     <p><strong>Typ:</strong> {{ contract.contract_type }}</p>
     {% if contract.contract_link %}
-    <p><strong>Vertrag:</strong> <a href="{{ contract.contract_link }}" target="_blank" rel="noopener noreferrer">Link oeffnen</a></p>
+    <p><strong>Vertrag:</strong> <a href="{{ contract.contract_link }}" target="_blank" rel="noopener noreferrer">Link öffnen</a></p>
     {% endif %}
     {% if contract.invoice_link %}
-    <p><strong>Rechnungen:</strong> <a href="{{ contract.invoice_link }}" target="_blank" rel="noopener noreferrer">Link oeffnen</a></p>
+    <p><strong>Rechnungen:</strong> <a href="{{ contract.invoice_link }}" target="_blank" rel="noopener noreferrer">Link öffnen</a></p>
     {% endif %}
     <p><strong>Laufzeit:</strong> {{ contract.start_date }} bis {{ contract.end_date or "offen" }}</p>
-    <p><strong>Gekuendigt zum:</strong> {{ contract.cancellation_date or "nicht gekuendigt" }}</p>
-    <p><strong>Kuendigungsfrist:</strong> {{ contract.cancellation_period_label or "nicht gepflegt" }}</p>
-    <p><strong>Kuendbar bis:</strong> {{ contract.cancellation_deadline or "nicht berechenbar" }}</p>
-    <p><strong>Verlaengerung:</strong>
+    <p><strong>Gekündigt zum:</strong> {{ contract.cancellation_date or "nicht gekündigt" }}</p>
+    <p><strong>Kündigungsfrist:</strong> {{ contract.cancellation_period_label or "nicht gepflegt" }}</p>
+    <p><strong>Kündbar bis:</strong> {{ contract.cancellation_deadline or "nicht berechenbar" }}</p>
+    <p><strong>Verlängerung:</strong>
         {% if contract.renewal_type == "automatic" %}
-        automatisch - laeuft ohne Kuendigung weiter
+        automatisch - läuft ohne Kündigung weiter
         {% elif contract.renewal_type == "manual" %}
-        manuell - endet zum Vertragsende, ausser Laufzeit wird gepflegt
+        manuell - endet zum Vertragsende, außer Laufzeit wird gepflegt
         {% else %}
         keine - endet zum Vertragsende
         {% endif %}
@@ -62,8 +62,8 @@
         <table class="table table-sm align-middle">
             <thead>
             <tr>
-                <th>Gueltig ab</th>
-                <th>Gueltig bis</th>
+                <th>Gültig ab</th>
+                <th>Gültig bis</th>
                 <th>Betrag</th>
                 <th>Konto</th>
                 <th>KS 1</th>

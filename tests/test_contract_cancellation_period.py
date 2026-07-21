@@ -71,7 +71,7 @@ class ContractCancellationPeriodTestCase(unittest.TestCase):
         response = self.client.post("/contracts/new", data={
             "partner_type": "customer",
             "customer_id": str(customer_id),
-            "title": "Vertrag mit Kuendigungsfrist",
+            "title": "Vertrag mit Kündigungsfrist",
             "contract_type": "revenue",
             "status": "active",
             "start_date": date(2026, 1, 1).isoformat(),
@@ -83,7 +83,7 @@ class ContractCancellationPeriodTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 302)
 
         with self.app.app_context():
-            contract = Contract.query.filter_by(title="Vertrag mit Kuendigungsfrist").first()
+            contract = Contract.query.filter_by(title="Vertrag mit Kündigungsfrist").first()
             self.assertEqual(contract.cancellation_period_value, 3)
             self.assertEqual(contract.cancellation_period_unit, "months")
             contract_id = contract.id
@@ -96,8 +96,8 @@ class ContractCancellationPeriodTestCase(unittest.TestCase):
     def test_cancellation_due_filter(self):
         self.login()
         with self.app.app_context():
-            self.add_contract("Bald kuendbar", date(2026, 12, 31), 3, "months")
-            self.add_contract("Spaeter kuendbar", date(2027, 12, 31), 3, "months")
+            self.add_contract("Bald kündbar", date(2026, 12, 31), 3, "months")
+            self.add_contract("Spaeter kündbar", date(2027, 12, 31), 3, "months")
 
             # Freeze the filter helper's date by monkey-patching the imported date class.
             from app.routes import contracts as contracts_route
@@ -115,8 +115,8 @@ class ContractCancellationPeriodTestCase(unittest.TestCase):
                 contracts_route.date = old_date
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"Bald kuendbar", response.data)
-        self.assertNotIn(b"Spaeter kuendbar", response.data)
+        self.assertIn("Bald kündbar".encode(), response.data)
+        self.assertNotIn("Später kündbar".encode(), response.data)
 
 
 if __name__ == "__main__":
