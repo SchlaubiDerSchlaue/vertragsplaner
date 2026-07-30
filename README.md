@@ -128,7 +128,7 @@ Admins können in der Weboberfläche unter `Admin` weitere Benutzer und API-Toke
 
 ## JSON-API für KI-Agenten und Skripte
 
-Die App stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist für lokale oder interne Agenten und Automatisierungen gedacht. Schreibzugriffe, Importe und Löschungen sind über diese API nicht möglich.
+Die App stellt eine JSON-API unter `/api/v1` bereit. Sie ist für lokale oder interne Agenten und Automatisierungen gedacht. API-Tokens mit Rolle `read` können Daten auslesen; Tokens mit Rolle `write` oder `admin` können zusätzlich Kunden, Lieferanten, Verträge, Positionen und Positionsversionen anlegen bzw. ändern. Importe und Löschungen sind über die API nicht möglich.
 
 Kurztest mit API-Token:
 

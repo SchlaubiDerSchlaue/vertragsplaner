@@ -1,8 +1,8 @@
 # JSON-API
 
-Die Anwendung stellt eine read-only JSON-API unter `/api/v1` bereit. Sie ist für lokale Skripte, interne Automatisierungen und KI-Agenten gedacht, die Vertrags-, Positions- und Planungsdaten auslesen sollen.
+Die Anwendung stellt eine JSON-API unter `/api/v1` bereit. Sie ist für lokale Skripte, interne Automatisierungen und KI-Agenten gedacht, die Vertrags-, Positions- und Planungsdaten lesen und mit passender Berechtigung pflegen sollen.
 
-> Wichtig: Die API erlaubt aktuell keine Schreibzugriffe, Importe oder Löschungen.
+> Wichtig: Schreibzugriffe benötigen einen API-Token mit Rolle `write` oder `admin`. Importe und Löschungen werden über die API nicht angeboten.
 
 ## Basis-URL
 
@@ -26,7 +26,13 @@ Jeder Request braucht einen API-Token als Bearer-Token:
 Authorization: Bearer <API_TOKEN>
 ```
 
-API-Tokens werden in der Weboberfläche unter `Admin -> API-Tokens` angelegt. Für die read-only API reicht die Rolle `read`; `write` und `admin` funktionieren ebenfalls, haben über die JSON-API aber keine zusätzlichen Schreibrechte.
+API-Tokens werden in der Weboberfläche unter `Admin -> API-Tokens` angelegt. Für GET-Requests reicht die Rolle `read`. POST- und PATCH-Requests benötigen mindestens die Rolle `write`; `admin` schließt diese Rechte ein.
+
+| Rolle | Rechte über die JSON-API |
+| --- | --- |
+| `read` | Daten und Planung lesen |
+| `write` | lesen, Ressourcen anlegen und ändern |
+| `admin` | wie `write`; weiterhin keine Löschungen über die API |
 
 Empfehlung für Beispiele und Skripte:
 
@@ -72,6 +78,22 @@ Fehler liefern `error`:
 }
 ```
 
+Validierungsfehler ergänzen feldbezogene Details:
+
+```json
+{
+  "error": {
+    "code": "validation_error",
+    "message": "Die übermittelten Daten sind ungültig.",
+    "details": {
+      "start_date": ["Dieses Feld muss ein gültiges Datum im Format YYYY-MM-DD sein."]
+    }
+  }
+}
+```
+
+Schreibzugriffe verwenden ausschließlich `Content-Type: application/json`. Unbekannte JSON-Felder werden abgelehnt, statt stillschweigend ignoriert zu werden. Erfolgreiche POST-Requests antworten mit `201 Created` und einem `Location`-Header, PATCH-Requests mit `200 OK`.
+
 ## Pagination
 
 Listen-Endpunkte unterstützen:
@@ -110,6 +132,9 @@ Beispielantwort:
 
 ```http
 GET /customers
+GET /customers/<id>
+POST /customers
+PATCH /customers/<id>
 ```
 
 Filter:
@@ -128,10 +153,31 @@ curl -sS \
   "$VERTRAGSPLANER_BASE_URL/customers?q=GmbH&status=active"
 ```
 
+Kunden anlegen (`write` oder `admin`):
+
+```bash
+curl -sS -X POST \
+  -H "Authorization: Bearer $VERTRAGSPLANER_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "customer_no": "K-100",
+    "name": "Beispiel GmbH",
+    "status": "active",
+    "email": "kontakt@example.com",
+    "city": "Kiel"
+  }' \
+  "$VERTRAGSPLANER_BASE_URL/customers"
+```
+
+Änderbare Felder: `customer_no`, `name`, `status`, `contact_name`, `email`, `street`, `postal_code`, `city`, `country`, `notes`. Erlaubte Statuswerte sind `active` und `inactive`.
+
 ### Lieferanten
 
 ```http
 GET /suppliers
+GET /suppliers/<id>
+POST /suppliers
+PATCH /suppliers/<id>
 ```
 
 Filter:
@@ -142,11 +188,15 @@ Filter:
 | `status` | Exakter Lieferantenstatus |
 | `limit`, `offset` | Pagination |
 
+Änderbare Felder: `supplier_no`, `name`, `status`, `contact_name`, `email`, `street`, `postal_code`, `city`, `country`, `notes`. Das JSON-Format entspricht dem Kundenformat, verwendet aber `supplier_no` statt `customer_no`.
+
 ### Verträge
 
 ```http
 GET /contracts
 GET /contracts/<id>
+POST /contracts
+PATCH /contracts/<id>
 ```
 
 Filter für die Liste:
@@ -188,10 +238,50 @@ curl -sS \
   "$VERTRAGSPLANER_BASE_URL/contracts/1"
 ```
 
+Vertrag anlegen (`write` oder `admin`):
+
+```bash
+curl -sS -X POST \
+  -H "Authorization: Bearer $VERTRAGSPLANER_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "partner_type": "customer",
+    "partner_id": 1,
+    "contract_no": "V-100",
+    "title": "Servicevertrag",
+    "contract_type": "revenue",
+    "status": "active",
+    "start_date": "2026-01-01",
+    "end_date": "2026-12-31",
+    "cancellation_period_value": 3,
+    "cancellation_period_unit": "months",
+    "renewal_type": "automatic",
+    "contract_link": "https://example.com/vertrag"
+  }' \
+  "$VERTRAGSPLANER_BASE_URL/contracts"
+```
+
+Pflichtfelder beim Anlegen: `partner_type`, `partner_id`, `title`, `start_date`. `partner_type` ist `customer` oder `supplier`. Weitere Felder: `contract_no`, `contract_type`, `status`, `end_date`, `cancellation_date`, `cancellation_period_value`, `cancellation_period_unit`, `renewal_type`, `responsible`, `contract_link`, `invoice_link`, `description`.
+
+Erlaubte Werte:
+
+- `contract_type`: `revenue`, `cost`
+- `status`: `draft`, `active`, `forecast`, `cancelled`, `ended`
+- `cancellation_period_unit`: `days`, `weeks`, `months`
+- `renewal_type`: `none`, `manual`, `automatic`
+
+Ein PATCH enthält nur die zu ändernden Felder. Zum Wechsel des Vertragspartners sollten `partner_type` und `partner_id` gemeinsam gesendet werden.
+
 ### Positionen
 
 ```http
 GET /positions
+GET /positions/<id>
+POST /contracts/<contract_id>/positions
+PATCH /positions/<id>
+POST /positions/<position_id>/versions
+GET /versions/<id>
+PATCH /versions/<id>
 ```
 
 Filter:
@@ -212,6 +302,41 @@ curl -sS \
   -H "Authorization: Bearer $VERTRAGSPLANER_API_TOKEN" \
   "$VERTRAGSPLANER_BASE_URL/positions?position_type=cost"
 ```
+
+Position anlegen (`write` oder `admin`):
+
+```bash
+curl -sS -X POST \
+  -H "Authorization: Bearer $VERTRAGSPLANER_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Grundgebühr","position_type":"revenue","status":"active","sort_order":10}' \
+  "$VERTRAGSPLANER_BASE_URL/contracts/1/positions"
+```
+
+Positionsfelder: `name`, `position_type` (`revenue` oder `cost`), `status` (`active` oder `inactive`) und `sort_order`. Fehlt `position_type` beim Anlegen, wird der Typ des Vertrags übernommen.
+
+Neue Positionsversion anlegen:
+
+```bash
+curl -sS -X POST \
+  -H "Authorization: Bearer $VERTRAGSPLANER_API_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "valid_from": "2026-01-01",
+    "amount": "99.90",
+    "currency": "EUR",
+    "recurrence": "monthly",
+    "billing_day": 1,
+    "is_active": true,
+    "account": "8400",
+    "cost_center_1": "VERTRIEB"
+  }' \
+  "$VERTRAGSPLANER_BASE_URL/positions/1/versions"
+```
+
+Pflichtfelder: `valid_from`, `amount`. Weitere Felder: `currency`, `recurrence`, `billing_day`, `is_active`, `account`, `cost_center_1`, `cost_center_2`, `note`. Beim Anlegen einer späteren Version werden überlappende ältere Versionen automatisch auf den Vortag begrenzt. `valid_to` ist nur beim PATCH einer bestehenden Version änderbar.
+
+Erlaubte Rhythmen: `monthly`, `quarterly`, `yearly`, `once`.
 
 ### Planung
 
@@ -277,5 +402,7 @@ Beide Beispiele lesen `VERTRAGSPLANER_BASE_URL` und `VERTRAGSPLANER_API_TOKEN` a
 ## Sicherheitshinweise
 
 - API-Tokens wie Passwörter behandeln und nicht commiten.
+- Für Automatisierungen getrennte Tokens verwenden und nur die tatsächlich notwendige Rolle vergeben.
+- Änderungen zunächst gegen eine Testinstanz prüfen; DELETE-Endpunkte sind absichtlich nicht vorhanden.
 - Die aktuelle API ist für interne Nutzung gedacht. Für öffentliche Bereitstellung sollte sie hinter HTTPS, Reverse Proxy, Rate-Limit und sauberem Secret-Management laufen.
 - Bei direktem Flask-Development-Server im Internet können Scanner viele 404/400-Requests erzeugen; produktiv besser Gunicorn/systemd plus Reverse Proxy verwenden.
