@@ -61,7 +61,7 @@
             </div>
 
             <div class="col-auto">
-                <a href="{{ url_for('admin.view_logs') }}download.csv?log={{ selected_log }}&lines={{ lines_count }}&q={{ search }}"
+                <a href="{{ url_for('admin.download_logs_csv') }}?log={{ selected_log }}&lines={{ lines_count }}&q={{ search }}"
                    class="btn btn-success">
                     CSV herunterladen
                 </a>
