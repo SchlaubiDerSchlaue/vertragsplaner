@@ -17,3 +17,12 @@ class Config:
         "sqlite:///contract_planning.db"
     )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+
+    # Logging configuration
+    # Override via environment variables:
+    #   VERTRAGSPLANER_LOG_DIR       - Log directory (default: logs/)
+    #   VERTRAGSPLANER_LOG_LEVEL     - Log level: DEBUG/INFO/WARNING/ERROR (default: INFO)
+    #   VERTRAGSPLANER_LOG_MAX_BYTES - Max size per log file in bytes (default: 10000000)
+    #   VERTRAGSPLANER_LOG_BACKUP_COUNT - Number of rotated backup files (default: 10)
+    LOG_DIR = env_value("VERTRAGSPLANER_LOG_DIR", "logs")
+    LOG_LEVEL = env_value("VERTRAGSPLANER_LOG_LEVEL", "INFO")

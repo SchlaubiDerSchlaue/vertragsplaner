@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="mb-0">Logs</h1>
+    <a class="btn btn-outline-secondary" href="{{ url_for('admin.index') }}">← Zurück zu Admin</a>
+</div>
+
+<!-- Log file selector -->
+<div class="card mb-3">
+    <div class="card-header">
+        <strong>Log-Dateien</strong>
+        <small class="text-muted">{{ log_dir }}</small>
+    </div>
+    <div class="card-body">
+        <div class="row g-2">
+            {% for key, label in log_files.items() %}
+            <div class="col-auto">
+                <a href="{{ url_for('admin.view_logs', log=key, lines=lines_count, q=search) }}"
+                   class="btn btn-sm {% if selected_log == key %}btn-primary{% else %}btn-outline-secondary{% endif %}">
+                    {{ label }}
+                    {% if log_info[key].exists %}
+                    <span class="badge bg-light text-dark">{{ log_info[key].size_human }}</span>
+                    {% else %}
+                    <span class="badge bg-secondary">leer</span>
+                    {% endif %}
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Filter -->
+<div class="card mb-3">
+    <div class="card-body">
+        <form method="GET" action="{{ url_for('admin.view_logs') }}" class="row g-3 align-items-end">
+            <input type="hidden" name="log" value="{{ selected_log }}">
+
+            <div class="col-auto">
+                <label for="lines" class="form-label">Zeilen</label>
+                <select name="lines" id="lines" class="form-select" onchange="this.form.submit()">
+                    <option value="50" {% if lines_count == 50 %}selected{% endif %}>50</option>
+                    <option value="100" {% if lines_count == 100 %}selected{% endif %}>100</option>
+                    <option value="250" {% if lines_count == 250 %}selected{% endif %}>250</option>
+                    <option value="500" {% if lines_count == 500 %}selected{% endif %}>500</option>
+                    <option value="1000" {% if lines_count == 1000 %}selected{% endif %}>1000</option>
+                </select>
+            </div>
+
+            <div class="col">
+                <label for="q" class="form-label">Suche</label>
+                <input type="text" class="form-control" id="q" name="q" value="{{ search }}" placeholder="Filter...">
+            </div>
+
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Filtern</button>
+                {% if search %}
+                <a href="{{ url_for('admin.view_logs', log=selected_log, lines=lines_count) }}" class="btn btn-outline-secondary">×</a>
+                {% endif %}
+            </div>
+
+            <div class="col-auto">
+                <a href="{{ url_for('admin.view_logs') }}download.csv?log={{ selected_log }}&lines={{ lines_count }}&q={{ search }}"
+                   class="btn btn-success">
+                    CSV herunterladen
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Log entries -->
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span>
+            <strong>
+                {% if selected_log == 'app' %}Anwendungs-Logs
+                {% elif selected_log == 'audit' %}Audit-Trail (Datenänderungen)
+                {% elif selected_log == 'access' %}Zugriffs-Logs (HTTP Requests)
+                {% elif selected_log == 'error' %}Fehler-Logs
+                {% else %}{{ selected_log }}.log{% endif %}
+            </strong>
+        </span>
+        <span class="badge bg-secondary">{{ log_entries|length }} Einträge</span>
+    </div>
+    <div class="card-body p-0">
+        {% if log_entries %}
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th style="width: 180px;">Zeitstempel</th>
+                        {% if selected_log == 'audit' %}
+                        <th>Aktion</th>
+                        <th>Resource</th>
+                        <th>Benutzer</th>
+                        <th>Details</th>
+                        {% else %}
+                        <th>Level</th>
+                        <th>Nachricht</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in log_entries %}
+                    <tr>
+                        <td class="text-muted" style="font-size: 0.85em; white-space: nowrap;">
+                            {{ entry.timestamp|default('') }}
+                        </td>
+
+                        {% if selected_log == 'audit' %}
+                        <!-- Audit log specific columns -->
+                        <td>
+                            {% if entry.action == 'create' %}
+                            <span class="badge bg-success">Erstellt</span>
+                            {% elif entry.action == 'update' %}
+                            <span class="badge bg-warning text-dark">Geändert</span>
+                            {% elif entry.action == 'delete' %}
+                            <span class="badge bg-danger">Gelöscht</span>
+                            {% elif entry.action == 'login' %}
+                            <span class="badge bg-info">Login</span>
+                            {% elif entry.action == 'logout' %}
+                            <span class="badge bg-secondary">Logout</span>
+                            {% else %}
+                            <span class="badge bg-light text-dark">{{ entry.action|default('–') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ entry.resource_type|default('') }}</strong>
+                            {% if entry.resource_id %}#{{ entry.resource_id }}{% endif %}
+                        </td>
+                        <td>
+                            {% if entry.username %}
+                            {{ entry.username }}
+                            {% elif entry.api_token_name %}
+                            <span class="text-muted">API: {{ entry.api_token_name }}</span>
+                            {% else %}
+                            <span class="text-muted">–</span>
+                            {% endif %}
+                            {% if entry.ip_address %}
+                            <br><small class="text-muted">{{ entry.ip_address }}</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.old_values %}
+                            <details class="mb-1">
+                                <summary class="text-muted" style="font-size: 0.85em; cursor: pointer;">
+                                    Vorher ({{ entry.old_values|length }} Felder)
+                                </summary>
+                                <pre class="mt-1 p-2 bg-light" style="font-size: 0.75em;"><code>{{ entry.old_values|tojson(indent=2) }}</code></pre>
+                            </details>
+                            {% endif %}
+                            {% if entry.new_values %}
+                            <details class="mb-1">
+                                <summary class="text-muted" style="font-size: 0.85em; cursor: pointer;">
+                                    Nachher ({{ entry.new_values|length }} Felder)
+                                </summary>
+                                <pre class="mt-1 p-2 bg-light" style="font-size: 0.75em;"><code>{{ entry.new_values|tojson(indent=2) }}</code></pre>
+                            </details>
+                            {% endif %}
+                            {% if entry.message and not entry.old_values and not entry.new_values %}
+                            <small>{{ entry.message }}</small>
+                            {% endif %}
+                        </td>
+
+                        {% else %}
+                        <!-- Standard log columns -->
+                        <td>
+                            {% if entry.level == 'DEBUG' %}
+                            <span class="badge bg-secondary">DEBUG</span>
+                            {% elif entry.level == 'INFO' %}
+                            <span class="badge bg-info">INFO</span>
+                            {% elif entry.level == 'WARNING' %}
+                            <span class="badge bg-warning text-dark">WARN</span>
+                            {% elif entry.level == 'ERROR' %}
+                            <span class="badge bg-danger">ERROR</span>
+                            {% else %}
+                            <span class="badge bg-light text-dark">{{ entry.level|default('') }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.logger %}
+                            <small class="text-muted">[{{ entry.logger }}]</small><br>
+                            {% endif %}
+                            {{ entry.message|default(entry._raw)|truncate(200) }}
+                            {% if entry._raw and entry._raw|length > 200 %}
+                            <details class="mt-1">
+                                <summary class="text-muted" style="font-size: 0.8em; cursor: pointer;">Vollständig</summary>
+                                <pre class="mt-1 p-2 bg-light" style="font-size: 0.75em; overflow-x: auto;"><code>{{ entry._raw }}</code></pre>
+                            </details>
+                            {% endif %}
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center p-5 text-muted">
+            {% if log_info[selected_log].exists %}
+            <p>Keine Einträge gefunden.</p>
+            {% if search %}
+            <a href="{{ url_for('admin.view_logs', log=selected_log, lines=lines_count) }}" class="btn btn-sm btn-outline-secondary">Filter zurücksetzen</a>
+            {% endif %}
+            {% else %}
+            <p>Log-Datei existiert noch nicht.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    details > summary {
+        list-style: none;
+    }
+    details > summary::-webkit-details-marker {
+        display: none;
+    }
+    details > summary::before {
+        content: '▶ ';
+        font-size: 0.7em;
+    }
+    details[open] > summary::before {
+        content: '▼ ';
+    }
+</style>
+{% endblock %}
